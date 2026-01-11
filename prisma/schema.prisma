@@ -8,10 +8,20 @@ datasource db {
 }
   
 model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  role      Role       @default(USER)
+  bookmarks Bookmark[] // Added relation field
+}
+
+model Bookmark {
   id       String @id @default(uuid())
-  email    String @unique
-  password String
-  role     Role
+  userId   String
+  repoName String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, repoName]) // Optional: Prevents duplicate bookmarks for the same repo
 }
 
 enum Role {

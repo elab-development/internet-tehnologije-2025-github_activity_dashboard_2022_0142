@@ -127,6 +127,12 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role'
 };
 
+exports.Prisma.BookmarkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  repoName: 'repoName'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -137,13 +143,20 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password'
 };
+
+exports.Prisma.BookmarkOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  repoName: 'repoName'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   USER: 'USER'
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Bookmark: 'Bookmark'
 };
 
 /**

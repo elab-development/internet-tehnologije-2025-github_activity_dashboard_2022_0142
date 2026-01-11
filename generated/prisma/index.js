@@ -100,6 +100,12 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role'
 };
 
+exports.Prisma.BookmarkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  repoName: 'repoName'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -110,13 +116,20 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password'
 };
+
+exports.Prisma.BookmarkOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  repoName: 'repoName'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   USER: 'USER'
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Bookmark: 'Bookmark'
 };
 /**
  * Create the Client
@@ -126,10 +139,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "mysql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\nmodel User {\n  id       String @id @default(uuid())\n  email    String @unique\n  password String\n  role     Role\n}\n\nenum Role {\n  ADMIN\n  USER\n}\n"
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\nmodel User {\n  id        String     @id @default(uuid())\n  email     String     @unique\n  password  String\n  role      Role       @default(USER)\n  bookmarks Bookmark[] // Added relation field\n}\n\nmodel Bookmark {\n  id       String @id @default(uuid())\n  userId   String\n  repoName String\n  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, repoName]) // Optional: Prevents duplicate bookmarks for the same repo\n}\n\nenum Role {\n  ADMIN\n  USER\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"bookmarks\",\"kind\":\"object\",\"type\":\"Bookmark\",\"relationName\":\"BookmarkToUser\"}],\"dbName\":null},\"Bookmark\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"repoName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BookmarkToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
       getRuntime: async () => require('./query_compiler_bg.js'),
