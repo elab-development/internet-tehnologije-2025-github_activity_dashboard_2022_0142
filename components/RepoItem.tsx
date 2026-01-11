@@ -12,19 +12,19 @@ type Props = {
 export default function RepoItem({ repo }: Props) {
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(repo.isBookmarked);
 
   const handleBookmark = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting || isBookmarked) return;
 
     setIsSubmitting(true);
+
     try {
       const response = await fetch("/api/bookmarks", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          repoFullName: repo.full_name,
+          repoName: repo.full_name,
         }),
       });
 
@@ -32,10 +32,10 @@ export default function RepoItem({ repo }: Props) {
         throw new Error("Failed to add bookmark");
       }
 
-      alert("Bookmark added successfully!");
+      // optimistic success
+      setIsBookmarked(true);
     } catch (error) {
       console.error(error);
-      alert("Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -58,16 +58,18 @@ export default function RepoItem({ repo }: Props) {
       {session && (
         <button
           onClick={handleBookmark}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isBookmarked}
           type="button"
-          aria-label="Star repository"
+          aria-label="Bookmark repository"
           className={`px-3 py-1 rounded transition ${
-            isSubmitting 
-              ? "bg-gray-300 cursor-not-allowed" 
+            isBookmarked
+              ? "text-yellow-600 bg-yellow-100 cursor-default"
+              : isSubmitting
+              ? "bg-gray-300 cursor-not-allowed"
               : "text-gray-500 hover:text-yellow-600 hover:bg-yellow-50"
           }`}
         >
-          {isSubmitting ? "Saving..." : "Bookmark"}
+          {isBookmarked ? "Bookmarked" : isSubmitting ? "Saving..." : "Bookmark"}
         </button>
       )}
     </li>
