@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth"; 
 import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";
+import { octokit } from "@/lib/github";
+
 
 export async function POST(req: Request) {
   try {
@@ -34,26 +36,37 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
-  try {
-    const session = await auth();
+export async function GET(request: Request) {
+  const session = await auth();
+  if (!session?.user?.email) return NextResponse.json({ items: [], totalCount: 0 });
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const { searchParams } = new URL(request.url);
+  const page = Number(searchParams.get("page") ?? 1);
+  const perPage = 10;
 
-    const bookmarks = await bookmarkRepository.getUserBookmarks(
-      session.user.email
-    );
+  // 1. Get ONLY the names for the current page from the DB
+  // This is cheap because we are not fetching the whole DB
+  const bookmarks = await bookmarkRepository.getUserBookmarks(session.user.email);
+  const totalCount = bookmarks.length;
+  
+  const paginatedNames = bookmarks
+    .slice((page - 1) * perPage, page * perPage)
+    .map(b => `repo:${b.repoName}`)
+    .join(" ");
 
-    return NextResponse.json(bookmarks, { status: 200 });
-  } catch (error) {
-    console.error("GET Bookmarks Error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch bookmarks" },
-      { status: 500 }
-    );
-  }
+  if (!paginatedNames) return NextResponse.json({ items: [], totalCount: 0 });
+
+  // 2. Call Octokit directly here (Same logic as repos API)
+  // This is faster because server-to-GitHub communication is usually very fast
+  const response = await octokit.rest.search.repos({
+    q: paginatedNames,
+    per_page: perPage,
+  });
+
+  return NextResponse.json({
+    items: response.data.items.map(repo => ({ ...repo, isBookmarked: true })),
+    totalCount
+  });
 }
 
 export async function DELETE(req: Request) {

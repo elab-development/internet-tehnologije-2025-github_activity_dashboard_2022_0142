@@ -1,42 +1,36 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRepos } from "@/hooks/useRepos";
+import { Repo } from "@/types/repo";
 import RepoItem from "./RepoItem";
-import Pagination from "./Pagination";
 
 type Props = {
-  query: string;
+  repos: Repo[];
+  loading: boolean;
+  query?: string;
 };
 
-export default function RepoList({ query }: Props) {
-  const [page, setPage] = useState(1);
+export default function RepoList({ repos, loading, query }: Props) {
+  // 1. If we are searching and there's no query, show nothing
+  
 
-  const { repos, totalCount, loading } = useRepos(query, page);
-  const totalPages = Math.ceil(totalCount / 10);
+  if (query === "") return null;
 
-  useEffect(() => {
-    setPage(1);
-  }, [query]);
-
-  if (!query) return null;
+  // 2. HIGHEST PRIORITY: If we are loading, show ONLY the loading state
+  if (loading) return <p className="text-gray-400">Loading...</p>;
+  
+  // 3. If we are NOT loading and the array is empty, then it's truly empty
+  if (repos.length === 0) {
+    // If query is undefined, we are on the bookmarks page
+    const message = query === undefined 
+      ? "You haven't bookmarked any repos yet." 
+      : "No repositories found.";
+      
+    return <p className="text-gray-500">{message}</p>;
+  }
 
   return (
-    <div className="space-y-6">
-      {loading && <p className="text-gray-400">Loading...</p>}
-
-      {!loading &&<ul className="space-y-4">
-        {repos.map((repo) => (
-          <RepoItem key={repo.id} repo={repo} />
-        ))}
-      </ul>}
-
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPrev={() => setPage((p) => p - 1)}
-        onNext={() => setPage((p) => p + 1)}
-      />
-    </div>
+    <ul className="space-y-4">
+      {repos.map((repo) => (
+        <RepoItem key={repo.id} repo={repo} />
+      ))}
+    </ul>
   );
 }
