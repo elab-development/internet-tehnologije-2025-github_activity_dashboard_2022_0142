@@ -14,62 +14,51 @@ export default function RepoItem({ repo }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(repo.isBookmarked);
 
-  const handleBookmark = async () => {
-    if (isSubmitting || isBookmarked) return;
+  const toggleBookmark = async () => {
+    if (!session || isSubmitting) return;
 
+    const previousState = isBookmarked;
     setIsSubmitting(true);
+    setIsBookmarked(!previousState); // Optimistic Update
 
     try {
       const response = await fetch("/api/bookmarks", {
-        method: "POST",
+        method: previousState ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          repoName: repo.full_name,
-        }),
+        body: JSON.stringify({ repoName: repo.full_name }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add bookmark");
-      }
-
-      // optimistic success
-      setIsBookmarked(true);
+      if (!response.ok) throw new Error("Sync failed");
     } catch (error) {
-      console.error(error);
+      setIsBookmarked(previousState); // Rollback on error
+      console.error("Bookmark error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <li className="p-4 bg-gray-100 border border-gray-800 rounded-lg flex justify-between items-center">
-      <div>
-        <Link
-          href={`/${repo.full_name}`}
-          className="font-semibold hover:underline"
-        >
+    <li className="p-4 bg-gray-100 border border-gray-800 rounded-lg flex justify-between items-center transition-all">
+      <div className="min-w-0 flex-1">
+        <Link href={`/${repo.full_name}`} className="font-semibold hover:underline block truncate">
           {repo.full_name}
         </Link>
-        <p className="text-sm text-gray-400 mt-1">
-          {repo.description ?? "No description"}
+        <p className="text-sm text-gray-400 mt-1 line-clamp-1">
+          {repo.description ?? "No description available"}
         </p>
       </div>
 
       {session && (
         <button
-          onClick={handleBookmark}
-          disabled={isSubmitting || isBookmarked}
-          type="button"
-          aria-label="Bookmark repository"
-          className={`px-3 py-1 rounded transition ${
+          onClick={toggleBookmark}
+          disabled={isSubmitting}
+          className={`ml-4 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${
             isBookmarked
-              ? "text-yellow-600 bg-yellow-100 cursor-default"
-              : isSubmitting
-              ? "bg-gray-300 cursor-not-allowed"
-              : "text-gray-500 hover:text-yellow-600 hover:bg-yellow-50"
-          }`}
+              ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500 shadow-yellow-200/50"
+              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          } ${isSubmitting ? "opacity-70 cursor-not-allowed scale-95" : "active:scale-95"}`}
         >
-          {isBookmarked ? "Bookmarked" : isSubmitting ? "Saving..." : "Bookmark"}
+          {isSubmitting ? "..." : isBookmarked ? "★ Bookmarked" : "☆ Bookmark"}
         </button>
       )}
     </li>
