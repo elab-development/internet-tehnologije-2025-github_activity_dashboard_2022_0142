@@ -14,28 +14,42 @@ export default function Header() {
   return (
     <header className="w-full flex items-center px-6 py-4 border-b">
       <div className="ml-auto flex items-center gap-4">
+        {pathname !== "/" && (
+          <Link
+            href="/"
+            className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+          >
+            Home
+          </Link>
+        )}
+
         {session ? (
           <>
-            <Link
-              href="/user"
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-            >
-              My Profile
-            </Link>
+            {pathname !== "/user" && (
+              <Link
+                href="/user"
+                className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+              >
+                My Bookmarks
+              </Link>
+            )}
+            
             <button
-              onClick={() => signOut({ callbackUrl: fullPath })}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
             >
               Log out
             </button>
           </>
         ) : (
-          <button
-            onClick={() => signIn(undefined, { callbackUrl: fullPath })}
-            className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
-          >
-            Log in
-          </button>
+          pathname !== "/login" && (
+            <button
+              onClick={() => signIn(undefined, { callbackUrl: fullPath })}
+              className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+            >
+              Log in
+            </button>
+          )
         )}
       </div>
     </header>

@@ -14,11 +14,9 @@ export default function HomePage() {
   const query = searchParams.get("q") ?? "";
   const [page, setPage] = useState(1);
 
-  // Data fetching now happens at the Page level
   const { repos, totalCount, loading } = useRepos(query, page);
   const totalPages = Math.ceil(totalCount / 10);
 
-  // Reset to page 1 whenever the search query changes
   useEffect(() => {
     setPage(1);
   }, [query]);
@@ -34,10 +32,8 @@ export default function HomePage() {
     <section className="space-y-8">
       <SearchBox initialValue={query} onSearch={handleSearch} />
       
-      {/* RepoList now only cares about the list and loading state */}
       <RepoList repos={repos} loading={loading} query={query}/>
 
-      {/* Pagination is controlled here */}
       {query && totalPages > 0 && (
         <Pagination
           page={page}

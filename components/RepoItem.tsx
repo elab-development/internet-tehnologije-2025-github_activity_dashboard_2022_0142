@@ -19,7 +19,7 @@ export default function RepoItem({ repo }: Props) {
 
     const previousState = isBookmarked;
     setIsSubmitting(true);
-    setIsBookmarked(!previousState); // Optimistic Update
+    setIsBookmarked(!previousState); 
 
     try {
       const response = await fetch("/api/bookmarks", {
@@ -30,7 +30,7 @@ export default function RepoItem({ repo }: Props) {
 
       if (!response.ok) throw new Error("Sync failed");
     } catch (error) {
-      setIsBookmarked(previousState); // Rollback on error
+      setIsBookmarked(previousState); 
       console.error("Bookmark error:", error);
     } finally {
       setIsSubmitting(false);
@@ -43,7 +43,7 @@ export default function RepoItem({ repo }: Props) {
         <Link href={`/${repo.full_name}`} className="font-semibold hover:underline block truncate">
           {repo.full_name}
         </Link>
-        <p className="text-sm text-gray-400 mt-1 line-clamp-1">
+        <p className="text-sm text-gray-400 mt-1 line-clamp-3">
           {repo.description ?? "No description available"}
         </p>
       </div>
@@ -52,13 +52,13 @@ export default function RepoItem({ repo }: Props) {
         <button
           onClick={toggleBookmark}
           disabled={isSubmitting}
-          className={`ml-4 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 shadow-sm ${
+          className={`ml-4 px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
             isBookmarked
               ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500 shadow-yellow-200/50"
-              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+              : "bg-white border border-gray-700 text-gray-700 hover:bg-gray-50"
           } ${isSubmitting ? "opacity-70 cursor-not-allowed scale-95" : "active:scale-95"}`}
         >
-          {isSubmitting ? "..." : isBookmarked ? "★ Bookmarked" : "☆ Bookmark"}
+          {isSubmitting ? "..." : isBookmarked ? "Bookmarked" : "Bookmark"}
         </button>
       )}
     </li>

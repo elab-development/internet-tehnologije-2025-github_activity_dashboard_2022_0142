@@ -12,7 +12,6 @@ export function useBookmarks(page: number) {
     async function fetchBookmarks() {
       setLoading(true);
       try {
-        // Only one network request!
         const res = await fetch(`/api/bookmarks?page=${page}`);
         const data = await res.json();
         setRepos(data.items ?? []);

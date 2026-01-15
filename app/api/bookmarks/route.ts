@@ -44,8 +44,6 @@ export async function GET(request: Request) {
   const page = Number(searchParams.get("page") ?? 1);
   const perPage = 10;
 
-  // 1. Get ONLY the names for the current page from the DB
-  // This is cheap because we are not fetching the whole DB
   const bookmarks = await bookmarkRepository.getUserBookmarks(session.user.email);
   const totalCount = bookmarks.length;
   
@@ -56,8 +54,6 @@ export async function GET(request: Request) {
 
   if (!paginatedNames) return NextResponse.json({ items: [], totalCount: 0 });
 
-  // 2. Call Octokit directly here (Same logic as repos API)
-  // This is faster because server-to-GitHub communication is usually very fast
   const response = await octokit.rest.search.repos({
     q: paginatedNames,
     per_page: perPage,
@@ -91,7 +87,6 @@ export async function DELETE(req: Request) {
       repoName
     );
 
-    // Prisma's deleteMany returns { count: number }
     if (result.count === 0) {
       return NextResponse.json(
         { error: "Bookmark not found" },

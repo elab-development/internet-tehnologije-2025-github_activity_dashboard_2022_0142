@@ -3,9 +3,14 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   async function login(formData: FormData) {
     const res = await signIn("credentials", {
@@ -14,10 +19,11 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    if (res?.error) {
+  if (res?.error) {
       setError("Invalid email or password");
     } else {
-      window.location.href = "/";
+      router.push(callbackUrl);
+      router.refresh();
     }
   }
 

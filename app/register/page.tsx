@@ -1,28 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; 
+import Link from "next/link";
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter(); 
 
   async function register(formData: FormData) {
+    setError(null);
+    setIsSubmitting(true);
+
     const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-      headers: { "Content-Type": "application/json" },
-    });
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setError(data.error || "Something went wrong");
-    } else {
-      // Success: Redirect to login
-      window.location.href = "/login";
+      if (!res.ok) {
+        setError(data.error || "Something went wrong");
+      } else {
+        router.push("/login?registered=true"); 
+      }
+    } catch (err) {
+      setError("Failed to connect to server");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -57,19 +69,20 @@ export default function RegisterPage() {
 
         <button
           type="submit"
+          disabled={isSubmitting}
           className="w-full py-2 mt-2 bg-gray-800 text-white rounded-md
-                     hover:bg-gray-900 transition-colors
+                     hover:bg-gray-900 transition-colors disabled:opacity-50
                      focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
-          Register
+          {isSubmitting ? "Creating Account..." : "Register"}
         </button>
       </form>
       
       <p className="mt-4 text-center text-sm text-gray-600">
         Already have an account?{" "}
-        <a href="/login" className="text-gray-900 font-semibold hover:underline">
+        <Link href="/login" className="text-gray-900 font-semibold hover:underline">
           Sign In
-        </a>
+        </Link>
       </p>
     </div>
   );

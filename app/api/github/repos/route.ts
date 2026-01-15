@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";
 
 export async function GET(request: Request) {
-  const session = await auth(); // may be null
+  const session = await auth(); 
 
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");
@@ -15,14 +15,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ items: [], totalCount: 0 });
   }
 
-  // 1. GitHub search (always allowed)
   const response = await octokit.rest.search.repos({
     q: query,
     page,
     per_page: perPage,
   });
 
-  // 2. Guest user → no bookmarks
   if (!session?.user?.email) {
     return NextResponse.json({
       items: response.data.items.map(repo => ({
@@ -33,7 +31,6 @@ export async function GET(request: Request) {
     });
   }
 
-  // 3. Authenticated user → merge bookmarks
   const bookmarks = await bookmarkRepository.getUserBookmarks(
     session.user.email
   );
