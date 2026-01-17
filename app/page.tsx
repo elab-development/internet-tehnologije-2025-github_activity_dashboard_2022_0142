@@ -18,16 +18,19 @@ export default function HomePage() {
   const { repos, totalCount, loading } = useRepos(query, page);
   const totalPages = Math.ceil(totalCount / 10);
 
-  function handleSearch(value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set("q", value);
-    } else {
-      params.delete("q");
-    }
+function handleSearch(value: string) {
+  const params = new URLSearchParams(searchParams.toString());
+
+  if (value) {
+    params.set("q", value);
+    params.set("page", "1"); // always mark first page
+  } else {
+    params.delete("q");
     params.delete("page");
-    router.replace(`/?${params.toString()}`);
   }
+
+  router.replace(`/?${params.toString()}`);
+}
 
   function handlePageChange(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());

@@ -2,7 +2,6 @@
   "name": "github-activity-dashboard",
   "version": "0.1.0",
   "private": true,
-  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,10 +14,11 @@
     "@prisma/client": "^7.2.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
+    "ioredis": "^5.9.2",
     "next": "16.1.0",
     "next-auth": "^5.0.0-beta.30",
     "octokit": "^5.0.5",
-    "prisma": "^7.2.0",
+    "prisma": "^6.19.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "undici": "^7.18.2"

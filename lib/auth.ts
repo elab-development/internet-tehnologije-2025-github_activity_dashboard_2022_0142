@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserRepository } from "@/lib/repositories/user.repository";
 
-// This is your typed user object
 interface AuthUser {
   id: string;
   email: string;
@@ -17,7 +16,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        // Narrow the unknown type to string
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
 
@@ -26,7 +24,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await UserRepository.findByEmail(email);
         if (!user) return null;
 
-        // Plain-text password comparison
         if (password !== user.password) return null;
 
         return {
