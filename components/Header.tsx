@@ -12,12 +12,14 @@ export default function Header() {
   const fullPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
 
   return (
-    <header className="w-full flex items-center px-6 py-4 border-b">
-      <div className="ml-auto flex items-center gap-4">
+    // pr-0 uklanja desni padding tako da sadržaj ide do ivice
+    <header className="w-full h-10 flex items-center pl-6 pr-0 border-b border-black">
+      
+      <div className="ml-auto flex items-center gap-0 h-full">
         {pathname !== "/" && (
           <Link
             href="/"
-            className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+            className="h-full px-6 flex items-center bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
           >
             Home
           </Link>
@@ -28,7 +30,7 @@ export default function Header() {
             {pathname !== "/user" && (
               <Link
                 href="/user"
-                className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+                className="h-full px-6 flex items-center bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
               >
                 My Bookmarks
               </Link>
@@ -36,7 +38,8 @@ export default function Header() {
             
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+              // border-l i border-r (ili border-x) čine da dugme ima linije sa obe strane
+              className="h-full px-6 bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
             >
               Log out
             </button>
@@ -45,7 +48,8 @@ export default function Header() {
           pathname !== "/login" && (
             <button
               onClick={() => signIn(undefined, { callbackUrl: fullPath })}
-              className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+              // border-l osigurava separaciju od prethodnog elementa, a ivica ekrana je desno
+              className="h-full px-6 bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
             >
               Log in
             </button>

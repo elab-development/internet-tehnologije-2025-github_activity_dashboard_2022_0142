@@ -38,7 +38,7 @@ export default function RepoItem({ repo }: Props) {
   };
 
   return (
-    <li className="p-4 bg-gray-100 border border-gray-800 rounded-lg flex justify-between items-center transition-all">
+    <li className="p-4 bg-gray-100 border border-gray-800 flex justify-between items-center transition-all">
       <div className="min-w-0 flex-1">
         <Link href={`/${repo.full_name}`} className="font-semibold hover:underline block truncate">
           {repo.full_name}
@@ -52,13 +52,13 @@ export default function RepoItem({ repo }: Props) {
         <button
           onClick={toggleBookmark}
           disabled={isSubmitting}
-          className={`ml-4 px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
+          className={`ml-4 px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
             isBookmarked
               ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500 shadow-yellow-200/50"
               : "bg-white border border-gray-700 text-gray-700 hover:bg-gray-50"
           } ${isSubmitting ? "opacity-70 cursor-not-allowed scale-95" : "active:scale-95"}`}
         >
-          {isSubmitting ? "..." : isBookmarked ? "Bookmarked" : "Bookmark"}
+          {isBookmarked ? "Bookmarked" : "Bookmark"}
         </button>
       )}
     </li>

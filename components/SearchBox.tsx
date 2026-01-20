@@ -20,9 +20,18 @@ export default function SearchBox({ onSearch, initialValue }: Props) {
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="flex-1 px-4 py-2 bg-gray-100 border border-gray-700 rounded-md"
+        // DODATE KLASE: 
+        // transition-colors (aktivira animaciju za boje)
+        // duration-300 (trajanje animacije 300ms)
+        // ease-in-out (ubrzanje/usporenje animacije za prirodniji efekat)
+        className={`flex-1 px-4 py-2 border border-gray-700 rounded-none focus:outline-none text-black transition-colors duration-300 ease-in-out ${
+          (value.length > 0) ? "bg-gray-100" : "bg-transparent"
+        }`}
       />
-      <button className="px-4 py-2 bg-gray-100 border border-gray-700 rounded-md">
+      <button 
+        type="submit"
+        className="px-6 py-2 bg-transparent hover:bg-gray-100 hover:text-black transition-all duration-300 ease-in-out border border-gray-700 rounded-none text-black"
+      >
         Search
       </button>
     </form>

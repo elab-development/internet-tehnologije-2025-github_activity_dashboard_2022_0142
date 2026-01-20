@@ -12,12 +12,8 @@ export default function RepoList({ repos, loading, query }: Props) {
 
   if (loading) return <p className="text-gray-400">Loading...</p>;
   
-  if (repos.length === 0) {
-    const message = query === undefined 
-      ? "You haven't bookmarked any repos yet." 
-      : "No repositories found.";
-      
-    return <p className="text-gray-500">{message}</p>;
+  if (repos.length === 0) {   
+    return <p className="text-gray-500">{"No repositories found."}</p>;
   }
 
   return (

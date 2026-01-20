@@ -9,7 +9,7 @@ type Props = {
 
 export default function ActivityItem({activity} : Props) {
 return (
-<li key={activity.id} className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+<li key={activity.id} className="p-4 bg-white border border-gray-800">
     <div className="flex items-center gap-3">
         <img src={activity.actor.avatar_url} className="w-6 h-6 rounded-full" alt="" />
             <span className="font-medium">{activity.actor.login}</span>

@@ -2,11 +2,6 @@ import Header from "@/components/Header";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
-export const metadata = {
-  title: "GitHub Activity Dashboard",
-  description: "Search GitHub repositories",
-};
-
 export default function RootLayout({
   children,
 }: {

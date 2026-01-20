@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SearchBox from "@/components/SearchBox";
 import RepoList from "@/components/RepoList";
@@ -23,7 +22,7 @@ function handleSearch(value: string) {
 
   if (value) {
     params.set("q", value);
-    params.set("page", "1"); // always mark first page
+    params.set("page", "1");
   } else {
     params.delete("q");
     params.delete("page");
@@ -38,12 +37,11 @@ function handleSearch(value: string) {
     router.replace(`/?${params.toString()}`);
   }
 
-  const containerClass = query 
-    ? "space-y-8" 
-    : "flex flex-col items-center justify-center min-h-[60vh]";
-
   return (
-    <div className={containerClass}>
+    <div className={query 
+    ? "space-y-8" 
+    : "flex flex-col items-center justify-center min-h-[60vh]"}>
+      
       <div className={query ? "w-full" : "w-full max-w-2xl"}>
         <SearchBox initialValue={query} onSearch={handleSearch} />
       </div>
