@@ -28,7 +28,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow">
+    <div className="max-w-md mx-auto mt-20 p-6 bg-transparent border">
       <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
       <form action={login} className="flex flex-col gap-4">
@@ -41,7 +41,7 @@ export default function LoginPage() {
           type="email"
           required
           placeholder="Email"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md
+          className="w-full px-3 py-2 border
                      focus:outline-none focus:ring-2 focus:ring-gray-800
                      focus:border-transparent"
         />
@@ -51,14 +51,14 @@ export default function LoginPage() {
           type="password"
           required
           placeholder="Password"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md
+          className="w-full px-3 py-2 border
                      focus:outline-none focus:ring-2 focus:ring-gray-800
                      focus:border-transparent"
         />
 
         <button
           type="submit"
-          className="w-full py-2 mt-2 bg-gray-800 text-white rounded-md
+          className="w-full py-2 mt-2 bg-gray-800 text-white
                      hover:bg-gray-900 transition-colors
                      focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
@@ -67,7 +67,6 @@ export default function LoginPage() {
       </form>
 
       <div className="mt-6 text-center text-sm text-gray-600">
-        Don't have an account?{" "}
         <Link 
           href="/register" 
           className="font-semibold text-gray-900 hover:underline transition-all"

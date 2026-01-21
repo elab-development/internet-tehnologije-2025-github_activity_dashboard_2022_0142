@@ -1,5 +1,6 @@
 import { Repo } from "@/types/repo";
 import RepoItem from "./RepoItem";
+import RepoItemPlaceholder from "./RepoItemPlaceholder";
 
 type Props = {
   repos: Repo[];
@@ -8,6 +9,17 @@ type Props = {
 };
 
 export default function RepoList({ repos, loading, query }: Props) {
+  if (query === "") return null;
+
+  if (loading) {
+    return (
+      <ul className="space-y-4">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <RepoItemPlaceholder key={i} />
+        ))}
+      </ul>
+    );
+  }
   if (query === "") return null;
 
   if (loading) return <p className="text-gray-400">Loading...</p>;

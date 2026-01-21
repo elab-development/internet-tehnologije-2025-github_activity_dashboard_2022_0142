@@ -11,7 +11,7 @@ export default function ActivityItem({activity} : Props) {
 return (
 <li key={activity.id} className="p-4 bg-white border border-gray-800">
     <div className="flex items-center gap-3">
-        <img src={activity.actor.avatar_url} className="w-6 h-6 rounded-full" alt="" />
+        <img src={activity.actor.avatar_url} className="w-6 h-6 rounded-b-none" alt="" />
             <span className="font-medium">{activity.actor.login}</span>
             <span className="text-gray-500">{activity.type}</span>
     </div>
