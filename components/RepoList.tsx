@@ -1,38 +1,42 @@
+"use client";
+
 import { Repo } from "@/types/repo";
-import RepoItem from "./RepoItem";
 import RepoItemPlaceholder from "./RepoItemPlaceholder";
+import RepoItem from "./RepoItem";
 
 type Props = {
   repos: Repo[];
   loading: boolean;
-  query?: string;
+  query: string;
+  type: string;
 };
 
-export default function RepoList({ repos, loading, query }: Props) {
-  if (query === "") return null;
-
+export default function RepoList({ repos, loading, query, type }: Props) {
   if (loading) {
     return (
-      <ul className="space-y-4">
-        {Array.from({ length: 10 }).map((_, i) => (
+      <div className="grid grid-cols-1 gap-4">
+        {[...Array(6)].map((_, i) => (
           <RepoItemPlaceholder key={i} />
         ))}
-      </ul>
+      </div>
     );
   }
-  if (query === "") return null;
 
-  if (loading) return <p className="text-gray-400">Loading...</p>;
-  
-  if (repos.length === 0) {   
-    return <p className="text-gray-500">{"No repositories found."}</p>;
+  if (repos.length === 0 && query) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <p className="text-gray-500 font-medium">
+          {type === "user" ? "No users found" : "No repositories found"}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <ul className="space-y-4">
+    <div className="grid grid-cols-1 gap-4">
       {repos.map((repo) => (
         <RepoItem key={repo.id} repo={repo} />
       ))}
-    </ul>
+    </div>
   );
 }

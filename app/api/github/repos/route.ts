@@ -5,59 +5,68 @@ import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";
 import { redis } from "@/lib/redis"; 
 
 export async function GET(request: Request) {
-  const session = await auth(); 
-  const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q")?.toLowerCase(); 
-  const page = Number(searchParams.get("page") ?? 1);
-  const perPage = 10;
-
-  if (!query) {
-    return NextResponse.json({ items: [], totalCount: 0 });
-  }
-
-  const cacheKey = `gh:search:$aa{query}:p:${page}`;
-  let searchData;
-
   try {
-    const cached = await redis.get(cacheKey);
-    if (cached) {
-      console.log("Data retrieved from cache.");
-      searchData = JSON.parse(cached);
-    } else {
-      console.log("Data not cached, fetched instead.");
-      const response = await octokit.rest.search.repos({
-        q: query,
-        page,
-        per_page: perPage,
-      });
-      
-      searchData = {
-        items: response.data.items,
-        totalCount: response.data.total_count,
-      };
+    const session = await auth(); 
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("q")?.toLowerCase(); 
+    const type = searchParams.get("type") ?? "repo";
+    const page = Number(searchParams.get("page") ?? 1);
+    const perPage = 10;
 
-      await redis.set(cacheKey, JSON.stringify(searchData), "EX", 30);
+    if (!query) {
+      return NextResponse.json({ items: [], totalCount: 0 });
     }
-  } catch (err) {
-    console.error("Redis Error:", err);
-    const response = await octokit.rest.search.repos({ q: query, page, per_page: perPage });
-    searchData = { items: response.data.items, totalCount: response.data.total_count };
+
+    const finalQuery = type === "user" ? `user:${query}` : query;
+    const cacheKey = `gh:search:${type}:${query}:p:${page}`;
+    let searchData;
+
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        searchData = JSON.parse(cached);
+      } else {
+        const response = await octokit.rest.search.repos({
+          q: finalQuery,
+          page,
+          per_page: perPage,
+        });
+        searchData = {
+          items: response.data.items,
+          totalCount: response.data.total_count,
+        };
+        await redis.set(cacheKey, JSON.stringify(searchData), "EX", 30);
+      }
+    } catch (err: any) {
+      if (err.status === 422) {
+        searchData = { items: [], totalCount: 0 };
+      } else {
+        const response = await octokit.rest.search.repos({ q: finalQuery, page, per_page: perPage });
+        searchData = { items: response.data.items, totalCount: response.data.total_count };
+      }
+    }
+
+    if (!session?.user?.email) {
+      return NextResponse.json({
+        items: (searchData?.items ?? []).map((repo: any) => ({ ...repo, isBookmarked: false })),
+        totalCount: searchData?.totalCount ?? 0,
+      });
+    }
+
+    const bookmarks = await bookmarkRepository.getUserBookmarks(session.user.email);
+    const bookmarkedSet = new Set(bookmarks.map(b => b.repoName));
+
+    const items = (searchData?.items ?? []).map((repo: any) => ({
+      ...repo,
+      isBookmarked: bookmarkedSet.has(repo.full_name),
+    }));
+
+    return NextResponse.json({ items, totalCount: searchData?.totalCount ?? 0 });
+
+  } catch (globalError: any) {
+    if (globalError.status === 422) {
+      return NextResponse.json({ items: [], totalCount: 0 });
+    }
+    return NextResponse.json({ items: [], totalCount: 0, error: "Internal Server Error" }, { status: 500 });
   }
-
-  if (!session?.user?.email) {
-    return NextResponse.json({
-      items: searchData.items.map((repo: any) => ({ ...repo, isBookmarked: false })),
-      totalCount: searchData.totalCount,
-    });
-  }
-
-  const bookmarks = await bookmarkRepository.getUserBookmarks(session.user.email);
-  const bookmarkedSet = new Set(bookmarks.map(b => b.repoName));
-
-  const items = searchData.items.map((repo: any) => ({
-    ...repo,
-    isBookmarked: bookmarkedSet.has(repo.full_name),
-  }));
-
-  return NextResponse.json({ items, totalCount: searchData.totalCount });
 }

@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { Repo } from "@/types/repo";
 
-
-export function useRepos(query: string, page: number) {
+export function useRepos(query: string, page: number, type: string) {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -13,13 +12,14 @@ export function useRepos(query: string, page: number) {
     if (!query) {
       setRepos([]);
       setTotalCount(0);
+      setLoading(false);
       return;
     }
 
     async function fetchRepos() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/github/repos?q=${query}&page=${page}`);
+        const res = await fetch(`/api/github/repos?q=${query}&page=${page}&type=${type}`);
         const data = await res.json();
         setRepos(data.items ?? []);
         setTotalCount(data.totalCount ?? 0);
@@ -33,7 +33,7 @@ export function useRepos(query: string, page: number) {
     }
 
     fetchRepos();
-  }, [query, page]);
+  }, [query, page, type]);
 
   return { repos, totalCount, loading };
 }

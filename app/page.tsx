@@ -11,25 +11,27 @@ export default function HomePage() {
   const router = useRouter();
   
   const query = searchParams.get("q") ?? "";
-  
+  const type = searchParams.get("type") ?? "repo";
   const page = Number(searchParams.get("page")) || 1;
 
-  const { repos, totalCount, loading } = useRepos(query, page);
+  const { repos, totalCount, loading } = useRepos(query, page, type);
   const totalPages = Math.ceil(totalCount / 10);
 
-function handleSearch(value: string) {
-  const params = new URLSearchParams(searchParams.toString());
+  function handleSearch(value: string, newType: string) {
+    const params = new URLSearchParams(searchParams.toString());
 
-  if (value) {
-    params.set("q", value);
-    params.set("page", "1");
-  } else {
-    params.delete("q");
-    params.delete("page");
+    if (value) {
+      params.set("q", value);
+      params.set("type", newType);
+      params.set("page", "1");
+    } else {
+      params.delete("q");
+      params.delete("type");
+      params.delete("page");
+    }
+
+    router.replace(`/?${params.toString()}`);
   }
-
-  router.replace(`/?${params.toString()}`);
-}
 
   function handlePageChange(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());
@@ -43,12 +45,16 @@ function handleSearch(value: string) {
     : "flex flex-col items-center justify-center min-h-[60vh]"}>
       
       <div className={query ? "w-full" : "w-full max-w-2xl"}>
-        <SearchBox initialValue={query} onSearch={handleSearch} />
+        <SearchBox 
+          initialValue={query} 
+          initialType={type} 
+          onSearch={handleSearch} 
+        />
       </div>
       
       {query && (
         <div className="w-full space-y-8">
-          <RepoList repos={repos} loading={loading} query={query}/>
+          <RepoList repos={repos} loading={loading} query={query} type={type}/>
 
           {totalPages > 0 && (
             <Pagination
