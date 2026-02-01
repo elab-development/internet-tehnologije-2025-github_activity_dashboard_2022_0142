@@ -16,7 +16,7 @@ export function UserCard({ user, onUpdate }: { user: any, onUpdate: () => void }
   };
 
   return (
-    <div className="p-4 border rounded shadow flex justify-between items-center bg-white">
+    <div className="p-4 border shadow flex justify-between items-center bg-white">
       <div>
         <p className="font-bold">{user.email}</p>
         <p className="text-sm text-gray-500">Bookmarks: {user._count.bookmarks}</p>
@@ -25,7 +25,7 @@ export function UserCard({ user, onUpdate }: { user: any, onUpdate: () => void }
         value={user.role} 
         disabled={loading}
         onChange={(e) => handleChange(e.target.value)}
-        className="border p-1 rounded"
+        className="border p-1"
       >
         <option value="USER">USER</option>
         <option value="ADMIN">ADMIN</option>

@@ -31,9 +31,8 @@ export default function Header() {
             {isAdmin && pathname !== "/admin" && (
               <Link
                 href="/admin"
-                className="h-full px-6 flex items-center bg-red-50 text-black text-sm hover:bg-red-100 border-l border-black transition-colors font-medium"
-              >
-                Admin Dashboard
+                className="h-full px-6 bg-transparent flex items-center text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
+              >Admin
               </Link>
             )}
 
