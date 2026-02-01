@@ -2,8 +2,8 @@
 
 import { use } from "react";
 import ActivityList from "@/components/ActivityList";
-import CommitsTimelineChart from "@/components/CommitsTimelineChart";
-import ContributorsChart from "@/components/ContributorsChart"; 
+import CommitsTimelineChart from "@/components/charts/CommitsTimelineChart";
+import ContributorsChart from "@/components/charts/ContributorsChart"; 
 import { useCommitTimeline } from "@/hooks/useCommitTimeline";
 import { useContributors } from "@/hooks/useContributors";
 

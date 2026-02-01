@@ -1,30 +1,22 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
 export function useCommitTimeline(owner: string, repo: string) {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let retry: NodeJS.Timeout;
+    if (!owner || !repo) return;
 
-    async function fetchData() {
-      const res = await fetch(
-        `/api/github/repos/commits?owner=${owner}&repo=${repo}`
-      );
-      const json = await res.json();
-
-      if (json?.pending) {
-        retry = setTimeout(fetchData, 3000);
-        return;
-      }
-
-      setData(json);
-      setLoading(false);
-    }
-
-    if (owner && repo) fetchData();
-
-    return () => clearTimeout(retry);
+    setLoading(true);
+    fetch(`/api/github/repos/commits?owner=${owner}&repo=${repo}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setData(d);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [owner, repo]);
 
   return { data, loading };

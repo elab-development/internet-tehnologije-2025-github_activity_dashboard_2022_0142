@@ -12,7 +12,7 @@ export default function ContributorsChart({ data }: { data: any[] }) {
   const dynamicHeight = Math.max(data.length * 40, 400);
 
   return (
-    <div className="w-full border bg-white p-4">
+    <div className="w-full bg-white p-4">
       <div className="overflow-y-auto max-h-150">
         <div style={{ height: dynamicHeight, width: "100%" }}>
           <ResponsiveContainer width="100%" height="100%">

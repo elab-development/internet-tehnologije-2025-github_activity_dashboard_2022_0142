@@ -8,13 +8,14 @@ export async function GET(req: Request) {
   const repo = searchParams.get("repo");
 
   if (!owner || !repo) {
+    console.log("return NextResponse.json({ error: Missingparams }, { status: 400 });");
     return NextResponse.json({ error: "Missing params" }, { status: 400 });
   }
 
   const key = `commits:${owner}:${repo}`;
-
   const cached = await redis.get(key);
   if (cached) {
+    console.log(" return NextResponse.json(JSON.parse(cached));");
     return NextResponse.json(JSON.parse(cached));
   }
 
@@ -24,6 +25,7 @@ export async function GET(req: Request) {
   });
 
   if (res.status === 202) {
+    console.log("return NextResponse.json({ pending: true });")
     return NextResponse.json({ pending: true });
   }
 
@@ -34,5 +36,6 @@ export async function GET(req: Request) {
 
   await redis.set(key, JSON.stringify(data), "EX", 1800);
 
+  console.log("It works!");
   return NextResponse.json(data);
 }
