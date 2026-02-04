@@ -4,7 +4,7 @@ import { use } from "react";
 import ActivityList from "@/components/ActivityList";
 import CommitsTimelineChart from "@/components/charts/CommitsTimelineChart";
 import ContributorsChart from "@/components/charts/ContributorsChart"; 
-import { useCommitTimeline } from "@/hooks/useCommitTimeline";
+import { useRepoStats } from "@/hooks/useRepoStats";
 import { useContributors } from "@/hooks/useContributors";
 
 export default function RepoActivityPage({
@@ -15,7 +15,8 @@ export default function RepoActivityPage({
   const { repo: pathSegments } = use(params);
   const [owner, repoName] = pathSegments;
 
-  const { data: timelineData, loading: timelineLoading } = useCommitTimeline(owner, repoName);
+  // Use the new hooks we discussed
+  const { data: timelineData, loading: timelineLoading } = useRepoStats(owner, repoName);
   const { data: contribData, loading: contribLoading } = useContributors(owner, repoName);
 
   return (
@@ -26,23 +27,19 @@ export default function RepoActivityPage({
 
       <div className="border p-4 bg-white">
         <h2 className="text-lg font-semibold mb-2">Commits over time</h2>
-        {timelineLoading ? (
-          <div className="h-70 flex items-center justify-center text-gray-500">
-            Loading...
-          </div>
-        ) : (
-          <CommitsTimelineChart data={timelineData} />
-        )}
+        {/* Pass data AND loading to the chart for safe internal mapping */}
+        <CommitsTimelineChart data={timelineData} loading={timelineLoading} />
 
-        <h2 className="text-lg font-semibold mb-2">Commits per User</h2>
+        <h2 className="text-lg font-semibold mb-2 mt-8">Commits per User</h2>
         {contribLoading ? (
-          <div className="h-70 flex items-center justify-center text-gray-500">
+          <div className="h-72 flex items-center justify-center text-gray-500">
             Loading...
           </div>
         ) : (
           <ContributorsChart data={contribData} />
         )}
       </div>
+
       <h1 className="text-2xl font-semibold mb-2">Recent events</h1>
       <ActivityList owner={owner} repoName={repoName} />
     </div>
