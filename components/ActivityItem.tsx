@@ -1,7 +1,7 @@
 "use client"
 
 type Props = {
-  activity: any; // Now representing a commit object
+  activity: any;
 };
 
 export default function ActivityItem({ activity }: Props) {

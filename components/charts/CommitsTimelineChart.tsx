@@ -11,7 +11,6 @@ import {
   CartesianGrid,
 } from "recharts";
 
-// Mapping the ViewMode to the keys returned by your new API logic
 type ViewMode = "daily" | "weekly" | "yearly";
 
 interface StatsData {
@@ -32,7 +31,6 @@ export default function CommitsTimelineChart({
   const chartData = useMemo(() => {
     if (!data || loading) return [];
 
-    // 'yearly' uses { label, count } from the Search API logic
     if (view === "yearly") {
       return data.yearly.map(item => ({
         label: item.label,
@@ -40,21 +38,26 @@ export default function CommitsTimelineChart({
       }));
     }
 
-    // 'weekly' uses the index-based data from Stats API
     if (view === "weekly") {
-      return data.weekly.map(item => ({
-        label: `Week ${item.week + 1}`,
-        commits: item.count
-      }));
+      return data.weekly.map((item, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (51 - index) * 7);
+        return {
+          label: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          commits: item.count
+        };
+      });
     }
 
-    // 'daily' logic (last 30 days)
     if (view === "daily") {
-      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      return data.daily.map(item => ({
-        label: days[item.day],
-        commits: item.count
-      }));
+      return data.daily.map((item, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (data.daily.length - 1 - index));
+        return {
+          label: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          commits: item.count
+        };
+      });
     }
 
     return [];
@@ -69,14 +72,12 @@ export default function CommitsTimelineChart({
   }
 
   return (
-    <div className="w-full bg-white border border-gray-100 rounded-lg p-4 shadow-sm">
+    <div >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-sm font-semibold text-gray-900">Commit Activity</h3>
         <select 
           value={view}
           onChange={(e) => setView(e.target.value as ViewMode)}
-          className="text-xs border border-gray-200 bg-gray-50 px-3 py-1.5 rounded outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer font-medium text-gray-700 transition-all"
-        >
+        className="text-xs border border-gray-800 p-2 outline-none w-full max-w-xs bg-white cursor-pointer rounded-none disabled:opacity-50">
           <option value="daily">Last Month (Daily)</option>
           <option value="weekly">Last Year (Weekly)</option>
           <option value="yearly">All Time (Yearly)</option>
@@ -111,9 +112,6 @@ export default function CommitsTimelineChart({
             />
             <Bar 
               dataKey="commits" 
-              fill="#3b82f6" 
-              radius={[4, 4, 0, 0]} 
-              barSize={view === 'yearly' ? 40 : undefined}
             />
           </BarChart>
         </ResponsiveContainer>

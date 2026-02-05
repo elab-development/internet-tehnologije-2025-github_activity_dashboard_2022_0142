@@ -1,4 +1,5 @@
 "use client";
+//not used anymore
 
 import { useEffect, useState } from "react";
 import { Activity } from "@/types/activity";
