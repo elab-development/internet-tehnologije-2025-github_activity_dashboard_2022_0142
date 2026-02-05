@@ -1,22 +1,27 @@
 "use client"
 
-import { Activity } from "@/types/activity";
-
 type Props = {
-  activity: Activity;
+  activity: any;
 };
 
+export default function ActivityItem({ activity }: Props) {
+  return (
+    <li className="p-4 bg-white border border-gray-800">
+      <div className="flex items-center gap-3">
+        {activity.avatar && (
+          <img src={activity.avatar} className="w-6 h-6 border border-gray-800" alt="" />
+        )}
+        <span className="font-medium text-sm">{activity.author}</span>
+        <span className="text-gray-400 text-xs font-mono">{activity.sha.substring(0, 7)}</span>
+      </div>
+      
+      <p className="mt-2 text-sm text-gray-800 line-clamp-2">
+        {activity.message}
+      </p>
 
-export default function ActivityItem({activity} : Props) {
-return (
-<li key={activity.id} className="p-4 bg-white border border-gray-800">
-    <div className="flex items-center gap-3">
-        <img src={activity.actor.avatar_url} className="w-6 h-6 rounded-b-none" alt="" />
-            <span className="font-medium">{activity.actor.login}</span>
-            <span className="text-gray-500">{activity.type}</span>
-    </div>
-    <p className="text-xs text-gray-400 mt-2">
-                {new Date(activity.created_at).toLocaleString()}
-    </p>
-</li>);
+      <p className="text-[10px] text-gray-400 mt-2 uppercase tracking-wider">
+        {new Date(activity.date).toLocaleString()}
+      </p>
+    </li>
+  );
 }
