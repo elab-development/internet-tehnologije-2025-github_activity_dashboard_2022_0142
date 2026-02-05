@@ -13,33 +13,23 @@ interface Commit {
 }
 
 export function useRepoCommits(owner: string, repo: string, page: number, author?: string) {
-  const [commits, setCommits] = useState<Commit[]>([]);
+  const [commits, setCommits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!owner || !repo) {
-      setCommits([]);
-      setLoading(false);
-      return;
-    }
+    if (!owner || !repo) return;
 
     async function fetchCommits() {
       setLoading(true);
       try {
         const authorParam = author ? `&author=${author}` : "";
         const res = await fetch(
-          `/api/repos/commits?owner=${owner}&repo=${repo}&page=${page}${authorParam}`
+          `/api/github/repos/commits?owner=${owner}&repo=${repo}&page=${page}${authorParam}`
         );
-
-        if (!res.ok) throw new Error("Failed to fetch commits");
-
         const data = await res.json();
         setCommits(data ?? []);
-        setError(null);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Commits fetch error:", err);
-        setError(err.message);
         setCommits([]);
       } finally {
         setLoading(false);
@@ -49,5 +39,5 @@ export function useRepoCommits(owner: string, repo: string, page: number, author
     fetchCommits();
   }, [owner, repo, page, author]);
 
-  return { commits, loading, error };
+  return { commits, loading };
 }
