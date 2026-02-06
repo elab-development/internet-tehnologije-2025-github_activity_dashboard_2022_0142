@@ -27,8 +27,27 @@ body {
   }
 }
 
-body {
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
-  image-rendering: pixelated;
+.retro-scrollbar .simplebar-track.simplebar-vertical {
+  width: 20px;
+  background-color: #dddddd; 
+  border-left: 1px solid #000;
+  opacity: 1;
+}
+
+.retro-scrollbar .simplebar-scrollbar::before {
+  background-color: #ffffff !important; 
+  border-radius: 0 !important;          
+  left: 2px;
+  right: 2px;
+  top: 2px;
+  bottom: 2px;
+  opacity: 1 !important;
+  
+  box-shadow: 0 0 0 1px #000000; 
+}
+
+.retro-scrollbar .simplebar-scrollbar.simplebar-visible::before,
+.retro-scrollbar .simplebar-scrollbar:hover::before {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
 }
