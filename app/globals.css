@@ -9,3 +9,26 @@ body {
   background-color: #dddddd;
   color: #1b1b1b;
 }
+
+@layer utilities {
+  .bg-blueprint {
+    background-color: #2b5797; 
+
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.15) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.15) 2px, transparent 2px),
+      linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+    
+    background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
+    
+    background-attachment: local;
+    background-repeat: repeat;
+  }
+}
+
+body {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated;
+}
