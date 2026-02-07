@@ -15,7 +15,6 @@ export default function RepoActivityPage({
   const { repo: pathSegments } = use(params);
   const [owner, repoName] = pathSegments;
 
-  // Use the new hooks we discussed
   const { data: timelineData, loading: timelineLoading } = useRepoStats(owner, repoName);
   const { data: contribData, loading: contribLoading } = useContributors(owner, repoName);
 
@@ -27,7 +26,6 @@ export default function RepoActivityPage({
 
       <div className="border p-4 bg-white">
         <h2 className="text-lg font-semibold mb-2">Commits over time</h2>
-        {/* Pass data AND loading to the chart for safe internal mapping */}
         <CommitsTimelineChart data={timelineData} loading={timelineLoading} />
 
         <h2 className="text-lg font-semibold mb-2 mt-8">Commits per User</h2>
