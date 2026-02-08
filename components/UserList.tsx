@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UserCard } from "./UserCard";
+import PlaceholderCard from "./PlaceholderCard";
 
 export function UserList() {
   const [users, setUsers] = useState([]);
@@ -14,15 +15,19 @@ export function UserList() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  if (loading) return <p>Loading users...</p>;
-
-  return (
-    <div className="grid gap-4">
-      {users.map((u: any) => (
-        <UserCard key={u.id} user={u} onUpdate={fetchUsers} />
-      ))}
-    </div>
-  );
+return (
+  <div className="grid gap-4">
+    {loading
+      ? Array.from({ length: 6 }).map((_, i) => (
+          <PlaceholderCard key={i} />
+        ))
+      : users.map((u: any) => (
+          <UserCard key={u.id} user={u} onUpdate={fetchUsers} />
+        ))}
+  </div>
+);
 }

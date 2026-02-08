@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import ActivityItem from "./ActivityItem";
 import { useRepoCommits } from "@/hooks/useRepoCommits";
 import { useContributors } from "@/hooks/useContributors";
-import ActivityItemPlaceholder from "./ActivityItemPlaceholder";
+import PlaceholderCard from "./PlaceholderCard";
 
 type Props = {
   owner: string;
@@ -61,7 +61,7 @@ export default function ActivityList({ owner, repoName }: Props) {
         ))}
         
         {commitsLoading && Array.from({ length: 5 }).map((_, i) => (
-          <ActivityItemPlaceholder key={`skeleton-${i}`} />
+          <PlaceholderCard key={`skeleton-${i}`} />
         ))}
       </ul>
 

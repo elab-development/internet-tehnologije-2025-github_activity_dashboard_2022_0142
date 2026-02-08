@@ -10,17 +10,15 @@ export default function Header() {
   const searchParams = useSearchParams();
 
   const fullPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
-
   const isAdmin = session?.user?.role === "ADMIN";
 
   return (
-    <header className="w-full h-10 flex items-center pl-6 pr-0 border-b border-black">
-      
-      <div className="ml-auto flex items-center gap-0 h-full">
+    <header className="fixed top-0 right-0 z-50 p-6 bg-transparent">
+      <div className="flex flex-col-reverse items-end gap-3">
         {pathname !== "/" && (
           <Link
             href="/"
-            className="h-full px-6 flex items-center bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
+            className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
           >
             Home
           </Link>
@@ -31,15 +29,16 @@ export default function Header() {
             {isAdmin && pathname !== "/admin" && (
               <Link
                 href="/admin"
-                className="h-full px-6 bg-transparent flex items-center text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
-              >Admin
+                className="h-12 px-8 bg-gray-100 flex items-center text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
+              >
+                Admin
               </Link>
             )}
 
             {pathname !== "/user" && (
               <Link
                 href="/user"
-                className="h-full px-6 flex items-center bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
+                className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
               >
                 My Bookmarks
               </Link>
@@ -47,8 +46,9 @@ export default function Header() {
             
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="h-full px-6 bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
-            >
+                className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
+              
+              >
               Log out
             </button>
           </>
@@ -56,7 +56,7 @@ export default function Header() {
           pathname !== "/login" && (
             <button
               onClick={() => signIn(undefined, { callbackUrl: fullPath })}
-              className="h-full px-6 bg-transparent text-black text-sm hover:bg-gray-100 border-l border-black transition-colors"
+                className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
             >
               Log in
             </button>
