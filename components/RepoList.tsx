@@ -1,8 +1,8 @@
 "use client";
 
 import { Repo } from "@/types/repo";
-import RepoItemPlaceholder from "./RepoItemPlaceholder";
 import RepoItem from "./RepoItem";
+import PlaceholderCard from "./PlaceholderCard";
 
 type Props = {
   repos: Repo[];
@@ -16,7 +16,7 @@ export default function RepoList({ repos, loading, query, type }: Props) {
     return (
       <div className="grid grid-cols-1 gap-4">
         {[...Array(6)].map((_, i) => (
-          <RepoItemPlaceholder key={i} />
+          <PlaceholderCard key={i} />
         ))}
       </div>
     );
