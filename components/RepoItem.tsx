@@ -6,10 +6,10 @@ export default function RepoItem({ repo }: { repo: Repo }) {
   return (
     <li className="p-4 bg-gray-100 border-2 border-gray-800 flex justify-between items-center transition-all relative">
       <div className="min-w-0 flex-1">
-        <Link href={`/${repo.full_name}`} className="text-xl font-bold hover:underline block truncate">
+        <Link href={`/${repo.full_name}`} className="text-xl font-semibold hover:underline block truncate">
           {repo.full_name}
         </Link>
-        <p className="text-base text-gray-500 mt-1 line-clamp-3">
+        <p className="text-lg text-gray-500 mt-1 line-clamp-3">
           {repo.description ?? "No description available"}
         </p>
       </div>

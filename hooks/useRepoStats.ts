@@ -15,13 +15,14 @@ export function useRepoStats(owner: string, repo: string) {
 
     async function fetchData() {
       try {
+        setLoading(true);
+
         const [statsRes, bookmarkRes] = await Promise.all([
           fetch(`/api/github/repos/stats?owner=${owner}&repo=${repo}`),
           fetch(`/api/bookmarks/check?repoName=${repoFullName}`)
         ]);
-        
+
         if (statsRes.status === 202) {
-          setLoading(true);
           timer = setTimeout(fetchData, 3000);
           return;
         }
@@ -31,9 +32,9 @@ export function useRepoStats(owner: string, repo: string) {
 
         setData(statsJson);
         setIsBookmarked(bookmarkJson.isBookmarked);
+        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch repo data", err);
-      } finally {
         setLoading(false);
       }
     }

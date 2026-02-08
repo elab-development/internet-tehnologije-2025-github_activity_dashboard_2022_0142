@@ -42,7 +42,16 @@ export default function RepoActivityPage({
 
       <div className="border p-4 bg-white">
         <h2 className="text-lg font-semibold mb-2">Commits over time</h2>
-        <CommitsTimelineChart data={timelineData} loading={timelineLoading} />
+        {timelineLoading ? 
+        (
+          <div className="h-72 flex items-center justify-center text-gray-500">
+            Loading...
+          </div>
+        ) : 
+        (
+          <CommitsTimelineChart data={timelineData} loading={timelineLoading} />
+        )}
+        
 
         <h2 className="text-lg font-semibold mb-2 mt-8">Commits per User</h2>
         {contribLoading ? (

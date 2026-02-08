@@ -15,19 +15,19 @@ export default function Pagination({ page, totalPages, onPrev, onNext }: Props) 
       <button
         disabled={page === 1}
         onClick={onPrev}
-        className="px-3 py-1 bg-gray-100 border rounded disabled:opacity-50"
+        className="px-3 py-1 bg-gray-100 border disabled:opacity-50"
       >
         Prev
       </button>
 
-      <span className="px-3 py-1 text-sm">
+      <span className="px-3 py-1 text-lg">
         Page {page} / {totalPages}
       </span>
 
       <button
         disabled={page === totalPages}
         onClick={onNext}
-        className="px-3 py-1 bg-gray-100 border rounded disabled:opacity-50"
+        className="px-3 py-1 bg-gray-100 border disabled:opacity-50"
       >
         Next
       </button>
