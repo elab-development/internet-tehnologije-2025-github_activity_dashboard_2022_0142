@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const owner = searchParams.get("owner");
     const repo = searchParams.get("repo");
-    const author = searchParams.get("author"); // Optional filter
+    const author = searchParams.get("author");
     const page = Number(searchParams.get("page") ?? 1);
     const perPage = 10;
 
@@ -15,7 +15,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Owner and Repo are required" }, { status: 400 });
     }
 
-    // Include 'author' and 'page' in cache key to keep filters isolated
     const cacheKey = `gh:commits:${owner}:${repo}:${author ?? "all"}:p:${page}`;
     
     const cached = await redis.get(cacheKey);
@@ -24,7 +23,7 @@ export async function GET(request: Request) {
     const response = await octokit.rest.repos.listCommits({
       owner,
       repo,
-      author: author || undefined, // GitHub ignores if undefined
+      author: author || undefined,
       per_page: perPage,
       page,
     });
@@ -39,7 +38,6 @@ export async function GET(request: Request) {
       url: c.html_url,
     }));
 
-    // Cache list for 5 minutes (300s) since commits are more frequent
     await redis.set(cacheKey, JSON.stringify(commitData), "EX", 300);
 
     return NextResponse.json(commitData);

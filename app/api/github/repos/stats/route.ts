@@ -16,24 +16,48 @@ export async function GET(request: Request) {
     const cached = await redis.get(cacheKey);
     if (cached) return NextResponse.json(JSON.parse(cached));
 
-    // 1. Get Repo metadata for the creation date (to calculate "all-time" years)
-    const { data: repoData } = await octokit.rest.repos.get({ owner, repo });
-    const creationYear = new Date(repoData.created_at).getFullYear();
-    const currentYear = new Date().getFullYear();
+    const today = new Date();
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(today.getDate() - 3);
 
-    // 2. Get Recent Activity (Daily/Weekly) - Returns last 52 weeks
-    const activityRes = await octokit.rest.repos.getCommitActivityStats({ owner, repo });
-    
-    // GitHub Status 202 means they are calculating the stats in the background
+    const [{ data: repoData }, activityRes, { data: veryRecent }] = await Promise.all([
+      octokit.rest.repos.get({ owner, repo }),
+      octokit.rest.repos.getCommitActivityStats({ owner, repo }),
+      octokit.rest.repos.listCommits({
+        owner,
+        repo,
+        since: threeDaysAgo.toISOString(),
+        per_page: 100
+      })
+    ]);
+
     if (activityRes.status === 202) {
       return NextResponse.json({ status: "processing" }, { status: 202 });
     }
 
-    const activityData = activityRes.data;
+    const activityData = (activityRes.data as any[]) || [];
+    const allDays = activityData.flatMap((week) => week.days);
+    const last30DaysCounts = allDays.slice(-30);
 
-    // 3. Fetch All-Time Yearly Data via Search API
+    const dailyData = last30DaysCounts.map((count, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (29 - i));
+      const dateStr = date.toISOString().split("T")[0];
+
+      const liveCount = veryRecent.filter(c => 
+        new Date(c.commit.author?.date!).toISOString().split("T")[0] === dateStr
+      ).length;
+
+      return {
+        day: dateStr,
+        count: Math.max(count, liveCount),
+      };
+    });
+
+    const creationYear = new Date(repoData.created_at).getFullYear();
+    const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - creationYear + 1 }, (_, i) => creationYear + i);
-    
+
     const yearly = await Promise.all(
       years.map(async (year) => {
         const q = `repo:${owner}/${repo} author-date:${year}-01-01..${year}-12-31`;
@@ -43,19 +67,12 @@ export async function GET(request: Request) {
     );
 
     const result = {
-      // Last 4 weeks of daily data
-      daily: activityData.slice(-4).flatMap((week) => 
-        week.days.map((count, dayIndex) => ({ day: dayIndex, count }))
-      ),
-      // Full year of weekly data
+      daily: dailyData,
       weekly: activityData.map((week, index) => ({ week: index, count: week.total })),
-      // Historical yearly data
-      yearly: yearly
+      yearly: yearly,
     };
 
-    // Cache stats for 1 hour (3600s) as historical data doesn't change fast
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 3600);
-
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 300);
     return NextResponse.json(result);
 
   } catch (error: any) {
