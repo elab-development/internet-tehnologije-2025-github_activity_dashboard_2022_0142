@@ -7,11 +7,11 @@ export const UserRepository = {
     });
   },
 
-  create(email: string, password: string, role: "USER" | "ADMIN" = "USER") {
+  create(email: string, hashedPassword: string, role: "USER" | "ADMIN" = "USER") {
     return prisma.user.create({
       data: {
         email,
-        password,
+        password: hashedPassword,
         role,
       },
     });

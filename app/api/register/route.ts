@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { UserRepository } from "@/lib/repositories/user.repository";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +13,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await UserRepository.findByEmail(email);
     if (existingUser) {
       return NextResponse.json(
@@ -21,15 +21,17 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create user
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await UserRepository.create(
       email,
-      password,
+      hashedPassword,
       "USER",
     );
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
+    console.error("REGISTRATION_ERROR:", error);
     return NextResponse.json(
       { error: "Registration failed" },
       { status: 500 }

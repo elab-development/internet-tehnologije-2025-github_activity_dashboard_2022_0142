@@ -1,12 +1,7 @@
-import NextAuth from "next-auth";
+import NextAuth, { type DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserRepository } from "@/lib/repositories/user.repository";
-
-interface AuthUser {
-  id: string;
-  email: string;
-  role: string;
-}
+import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -16,28 +11,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        const email = credentials?.email as string | undefined;
-        const password = credentials?.password as string | undefined;
+        const email = credentials?.email as string;
+        const password = credentials?.password as string;
 
         if (!email || !password) return null;
 
         const user = await UserRepository.findByEmail(email);
-        if (!user) return null;
-
-        if (password !== user.password) return null;
+        
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+          return null;
+        }
 
         return {
           id: user.id,
           email: user.email,
           role: user.role,
-        } as AuthUser;
+        };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as AuthUser).role;
+        token.role = user.role;
       }
       return token;
     },
