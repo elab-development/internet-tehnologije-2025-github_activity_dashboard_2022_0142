@@ -7,8 +7,8 @@ import PlaceholderCard from "./PlaceholderCard";
 type Props = {
   repos: Repo[];
   loading: boolean;
-  query: string;
-  type: string;
+  query?: string;
+  type?: string;
 };
 
 export default function RepoList({ repos, loading, query, type }: Props) {

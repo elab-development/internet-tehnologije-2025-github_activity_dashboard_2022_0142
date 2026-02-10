@@ -3,6 +3,7 @@ import { octokit } from "@/lib/github";
 import { auth } from "@/lib/auth";
 import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";
 import { redis } from "@/lib/redis"; 
+import { Repo } from "@/types/repo";
 
 export async function GET(request: Request) {
   try {
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
 
     if (!session?.user?.email) {
       return NextResponse.json({
-        items: (searchData?.items ?? []).map((repo: any) => ({ ...repo, isBookmarked: false })),
+        items: (searchData?.items ?? []).map((repo: Repo) => ({ ...repo, isBookmarked: false })),
         totalCount: searchData?.totalCount ?? 0,
       });
     }
@@ -56,7 +57,7 @@ export async function GET(request: Request) {
     const bookmarks = await bookmarkRepository.getUserBookmarks(session.user.email);
     const bookmarkedSet = new Set(bookmarks.map(b => b.repoName));
 
-    const items = (searchData?.items ?? []).map((repo: any) => ({
+    const items : Repo[] = (searchData?.items ?? []).map((repo: Repo) => ({
       ...repo,
       isBookmarked: bookmarkedSet.has(repo.full_name),
     }));

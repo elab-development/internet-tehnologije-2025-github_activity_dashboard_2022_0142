@@ -5,6 +5,7 @@ import ActivityItem from "./ActivityItem";
 import { useRepoCommits } from "@/hooks/useRepoCommits";
 import { useContributors } from "@/hooks/useContributors";
 import PlaceholderCard from "./PlaceholderCard";
+import { Commit } from "@/types/commit";
 
 type Props = {
   owner: string;
@@ -14,7 +15,7 @@ type Props = {
 export default function ActivityList({ owner, repoName }: Props) {
   const [page, setPage] = useState(1);
   const [author, setAuthor] = useState("");
-  const [allCommits, setAllCommits] = useState<any[]>([]);
+  const [allCommits, setAllCommits] = useState<Commit[]>([]);
   
   const { data: contributors, loading: contributorsLoading } = useContributors(owner, repoName);
   const { commits, loading: commitsLoading } = useRepoCommits(owner, repoName, page, author);

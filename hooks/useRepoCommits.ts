@@ -1,19 +1,10 @@
 "use client";
 
+import { Commit } from "@/types/commit";
 import { useEffect, useState } from "react";
 
-interface Commit {
-  sha: string;
-  message: string;
-  author: string;
-  login?: string;
-  avatar?: string;
-  date: string;
-  url: string;
-}
-
 export function useRepoCommits(owner: string, repo: string, page: number, author?: string) {
-  const [commits, setCommits] = useState<any[]>([]);
+  const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

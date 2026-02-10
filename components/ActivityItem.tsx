@@ -1,7 +1,9 @@
 "use client"
 
+import { Commit } from "@/types/commit";
+
 type Props = {
-  activity: any;
+  activity: Commit;
 };
 
 export default function ActivityItem({ activity }: Props) {

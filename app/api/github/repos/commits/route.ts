@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { octokit } from "@/lib/github";
 import { redis } from "@/lib/redis";
+import { Commit } from "@/types/commit";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
       page,
     });
 
-    const commitData = response.data.map((c: any) => ({
+    const commitData: Commit[] = response.data.map((c: any) => ({
       sha: c.sha,
       message: c.commit.message,
       author: c.commit.author.name,
