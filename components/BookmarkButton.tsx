@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Confetti from "react-confetti";
 
@@ -27,12 +27,11 @@ const PixelBookmarkIcon = ({ filled }: { filled: boolean }) => (
 
 export default function BookmarkButton({ repoFullName, initialIsBookmarked = false }: Props) {
   const { data: session } = useSession();
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [confettiActive, setConfettiActive] = useState(false);
-  const [confettiPos, setConfettiPos] = useState({ x: 0, y: 0 });
+  const [confettiPos, setConfettiPos] = useState({ x: 0, y: 0, t: 0 });
 
   const toggleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -44,11 +43,11 @@ export default function BookmarkButton({ repoFullName, initialIsBookmarked = fal
     setIsSubmitting(true);
     setIsBookmarked(isAdding);
 
-    if (isAdding && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
+    if (isAdding) {
       setConfettiPos({
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
+        x: e.clientX,
+        y: e.clientY,
+        t: Date.now(),
       });
       setConfettiActive(true);
       setTimeout(() => setConfettiActive(false), 5000);
@@ -76,7 +75,10 @@ export default function BookmarkButton({ repoFullName, initialIsBookmarked = fal
   return (
     <>
       {confettiActive && (
-        <div className="fixed inset-0 pointer-events-none z-50">
+        <div 
+          key={confettiPos.t} 
+          className="fixed inset-0 pointer-events-none z-50"
+        >
           <Confetti
             width={typeof window !== "undefined" ? window.innerWidth : 0}
             height={typeof window !== "undefined" ? window.innerHeight : 0}
@@ -98,7 +100,6 @@ export default function BookmarkButton({ repoFullName, initialIsBookmarked = fal
       )}
 
       <button
-        ref={buttonRef}
         onClick={toggleBookmark}
         disabled={isSubmitting}
         aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
