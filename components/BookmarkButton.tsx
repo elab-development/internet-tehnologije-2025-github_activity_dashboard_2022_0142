@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Confetti from "react-confetti";
 
@@ -33,10 +33,6 @@ export default function BookmarkButton({ repoFullName, initialIsBookmarked = fal
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [confettiActive, setConfettiActive] = useState(false);
   const [confettiPos, setConfettiPos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    setIsBookmarked(initialIsBookmarked);
-  }, [initialIsBookmarked]);
 
   const toggleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();

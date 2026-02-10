@@ -15,7 +15,6 @@ export async function GET(req: Request) {
 
   const res = await octokit.rest.repos.getContributorsStats({ owner, repo });
 
-  // GitHub returns 202 if it's calculating the data
   if (res.status === 202) return NextResponse.json({ pending: true });
 
   const data = (res.data as any[])
@@ -23,7 +22,7 @@ export async function GET(req: Request) {
       author: item.author.login,
       commits: item.total,
     }))
-    .sort((a, b) => b.commits - a.commits); // Highest commits first
+    .sort((a, b) => b.commits - a.commits);
 
   await redis.set(key, JSON.stringify(data), "EX", 3600);
   return NextResponse.json(data);

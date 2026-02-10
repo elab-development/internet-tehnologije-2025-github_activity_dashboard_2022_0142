@@ -16,7 +16,6 @@ export function useContributors(owner: string, repo: string) {
         const json = await res.json();
 
         if (json?.pending) {
-          // GitHub is still calculating, try again in 3 seconds
           retry = setTimeout(fetchData, 3000);
           return;
         }

@@ -39,7 +39,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-transparent border">
+    <div className="max-w-md mx-auto mt-20 p-6 bg-gray-100 border-2">
       <h1 className="text-2xl font-semibold mb-6 text-center">Create Account</h1>
 
       <form action={register} className="flex flex-col gap-4">
@@ -52,7 +52,7 @@ export default function RegisterPage() {
           type="email"
           required
           placeholder="Email"
-          className="w-full px-3 py-2 border
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
                      focus:outline-none focus:ring-2 focus:ring-gray-800
                      focus:border-transparent"
         />
@@ -62,7 +62,7 @@ export default function RegisterPage() {
           type="password"
           required
           placeholder="Password"
-          className="w-full px-3 py-2 border
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
                      focus:outline-none focus:ring-2 focus:ring-gray-800
                      focus:border-transparent"
         />
@@ -70,7 +70,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-2 mt-2 bg-gray-800 text-white
+          className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent
                      hover:bg-gray-900 transition-colors disabled:opacity-50
                      focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
@@ -78,7 +78,7 @@ export default function RegisterPage() {
         </button>
       </form>
       
-      <div className="mt-6 text-center text-sm text-gray-600">
+      <div className="mt-6 text-center text-lg text-gray-600">
         Already have an account?{" "}
         <Link href="/login" className="font-semibold text-gray-900 hover:underline transition-all">
           Sign In

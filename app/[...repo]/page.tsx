@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useMemo } from "react";
 import ActivityList from "@/components/ActivityList";
 import CommitsTimelineChart from "@/components/charts/CommitsTimelineChart";
 import ContributorsChart from "@/components/charts/ContributorsChart"; 
@@ -13,8 +13,13 @@ export default function RepoActivityPage({
 }: {
   params: Promise<{ repo: string[] }>;
 }) {
-  const { repo: pathSegments } = use(params);
-  const [owner, repoName] = pathSegments;
+  const resolvedParams = use(params);
+  
+  const { owner, repoName } = useMemo(() => {
+    const [o, r] = resolvedParams.repo;
+    return { owner: o, repoName: r };
+  }, [resolvedParams.repo]);
+
   const fullPath = `${owner}/${repoName}`;
 
   const { 
@@ -35,24 +40,22 @@ export default function RepoActivityPage({
           {fullPath}
         </h1>
         <BookmarkButton 
+          key={fullPath}
           repoFullName={fullPath} 
-          initialIsBookmarked={isBookmarked} 
+          initialIsBookmarked={!!isBookmarked} 
         />
       </div>
 
       <div className="border p-4 bg-white">
         <h2 className="text-lg font-semibold mb-2">Commits over time</h2>
-        {timelineLoading ? 
-        (
+        {timelineLoading ? (
           <div className="h-72 flex items-center justify-center text-gray-500">
             Loading...
           </div>
-        ) : 
-        (
+        ) : (
           <CommitsTimelineChart data={timelineData} loading={timelineLoading} />
         )}
         
-
         <h2 className="text-lg font-semibold mb-2 mt-8">Commits per User</h2>
         {contribLoading ? (
           <div className="h-72 flex items-center justify-center text-gray-500">

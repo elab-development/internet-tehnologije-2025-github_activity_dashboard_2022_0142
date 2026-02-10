@@ -13,34 +13,41 @@ export function useRepoStats(owner: string, repo: string) {
     let timer: NodeJS.Timeout;
     const repoFullName = `${owner}/${repo}`;
 
-    async function fetchData() {
+    async function checkBookmark() {
       try {
-        setLoading(true);
+        const res = await fetch(`/api/bookmarks/check?repoName=${repoFullName}`);
+        const json = await res.json();
+        setIsBookmarked(json.isBookmarked);
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-        const [statsRes, bookmarkRes] = await Promise.all([
-          fetch(`/api/github/repos/stats?owner=${owner}&repo=${repo}`),
-          fetch(`/api/bookmarks/check?repoName=${repoFullName}`)
-        ]);
-
-        if (statsRes.status === 202) {
-          timer = setTimeout(fetchData, 3000);
+    async function fetchStats() {
+      try {
+        const res = await fetch(`/api/github/repos/stats?owner=${owner}&repo=${repo}`);
+        
+        if (res.status === 202) {
+          timer = setTimeout(fetchStats, 3000);
           return;
         }
 
-        const statsJson = await statsRes.json();
-        const bookmarkJson = await bookmarkRes.json();
-
-        setData(statsJson);
-        setIsBookmarked(bookmarkJson.isBookmarked);
+        const json = await res.json();
+        setData(json);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to fetch repo data", err);
+        console.error(err);
         setLoading(false);
       }
     }
 
-    fetchData();
-    return () => clearTimeout(timer);
+    setLoading(true);
+    checkBookmark();
+    fetchStats();
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [owner, repo]);
 
   return { data, isBookmarked, loading };
