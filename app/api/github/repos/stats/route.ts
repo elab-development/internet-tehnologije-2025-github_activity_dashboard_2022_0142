@@ -45,9 +45,8 @@ export async function GET(request: Request) {
     //were always missing, so in the following we make sure recent commits are included
     const activityData = activityRes.data;
     const allDays = activityData.flatMap((week) => week.days);
-    const last30DaysCounts = allDays.slice(-30);
-
-    const dailyData = last30DaysCounts.map((count, i) => {
+    
+    const daily = allDays.slice(-30).map((count, i) => {
       //instead of increment we want acthual date
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));
@@ -59,8 +58,17 @@ export async function GET(request: Request) {
       ).length;
 
       return {
-        day: dateStr,
-        count: Math.max(count, liveCount),
+        label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
+        commits: Math.max(count, liveCount),
+      };
+    });
+
+    const weekly = activityData.slice(-12).map((item, index, arr) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (arr.length - 1 - index) * 7);
+      return {
+        label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
+        commits: item.total,
       };
     });
 
@@ -72,15 +80,11 @@ export async function GET(request: Request) {
       years.map(async (year) => {
         const q = `repo:${owner}/${repo} author-date:${year}-01-01..${year}-12-31`;
         const { data } = await octokit.rest.search.commits({ q, per_page: 1 });
-        return { label: year.toString(), count: data.total_count };
+        return { label: year.toString(), commits: data.total_count };
       })
     );
 
-    const result = {
-      daily: dailyData,
-      weekly: activityData.map((week, index) => ({ week: index, count: week.total })),
-      yearly: yearly,
-    };
+    const result = { daily, weekly, yearly };
 
     await redis.set(cacheKey, JSON.stringify(result), "EX", 300);
     return NextResponse.json(result);

@@ -13,10 +13,15 @@ import {
 
 type ViewMode = "daily" | "weekly" | "yearly";
 
+interface ChartItem {
+  label: string;
+  commits: number;
+}
+
 interface StatsData {
-  daily: { day: string; count: number }[];
-  weekly: { week: number; count: number }[];
-  yearly: { label: string; count: number }[];
+  daily: ChartItem[];
+  weekly: ChartItem[];
+  yearly: ChartItem[];
 }
 
 export default function CommitsTimelineChart({
@@ -30,37 +35,7 @@ export default function CommitsTimelineChart({
 
   const chartData = useMemo(() => {
     if (!data || loading) return [];
-
-    if (view === "yearly") {
-      return data.yearly.map((item) => ({
-        label: item.label,
-        commits: item.count,
-      }));
-    }
-
-    if (view === "weekly") {
-      return data.weekly.slice(-12).map((item, index, arr) => {
-        const date = new Date();
-        date.setDate(date.getDate() - (arr.length - 1 - index) * 7);
-        return {
-          label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
-          commits: item.count,
-        };
-      });
-    }
-
-    if (view === "daily") {
-      return data.daily.map((item) => {
-        const [year, month, day] = item.day.split('-').map(Number);
-        const date = new Date(year, month - 1, day);
-        return {
-          label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
-          commits: item.count,
-        };
-      });
-    }
-
-    return [];
+    return data[view] || [];
   }, [data, view, loading]);
 
   return (
