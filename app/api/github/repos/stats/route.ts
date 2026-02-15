@@ -21,12 +21,18 @@ export async function GET(request: Request) {
     threeDaysAgo.setDate(today.getDate() - 3);
 
     const [{ data: repoData }, activityRes, { data: veryRecent }] = await Promise.all([
+      //will need this for created_at
       octokit.rest.repos.get({ owner, repo }),
+      
+      //returns last 52 weeks (52 arrays containing commit count for each day of week)
       octokit.rest.repos.getCommitActivityStats({ owner, repo }),
+      
       octokit.rest.repos.listCommits({
         owner,
         repo,
         since: threeDaysAgo.toISOString(),
+        //GitHub API can return max of 100 commits at once,
+        //and it should be enough for most repos (we dont want to waste extra requests)
         per_page: 100
       })
     ]);
@@ -35,15 +41,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ status: "processing" }, { status: 202 });
     }
 
-    const activityData = (activityRes.data as any[]) || [];
+    //when only using getCommitActivityStats() last few days of commits
+    //were always missing, so in the following we make sure recent commits are included
+    const activityData = activityRes.data;
     const allDays = activityData.flatMap((week) => week.days);
     const last30DaysCounts = allDays.slice(-30);
 
     const dailyData = last30DaysCounts.map((count, i) => {
+      //instead of increment we want acthual date
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));
+      //YYYY-MM-DDTHH-MM-SS => YYYY-MM-DD
       const dateStr = date.toISOString().split("T")[0];
-
+      
       const liveCount = veryRecent.filter(c => 
         new Date(c.commit.author?.date!).toISOString().split("T")[0] === dateStr
       ).length;
@@ -77,6 +87,9 @@ export async function GET(request: Request) {
 
   } catch (error: any) {
     console.error("Stats API Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error", message: error.message }, 
+      { status: 500 }
+    );
   }
 }

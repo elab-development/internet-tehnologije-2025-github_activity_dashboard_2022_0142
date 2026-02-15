@@ -43,7 +43,7 @@ export default function CommitsTimelineChart({
         const date = new Date();
         date.setDate(date.getDate() - (arr.length - 1 - index) * 7);
         return {
-          label: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
           commits: item.count,
         };
       });
@@ -54,7 +54,7 @@ export default function CommitsTimelineChart({
         const [year, month, day] = item.day.split('-').map(Number);
         const date = new Date(year, month - 1, day);
         return {
-          label: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          label: date.toLocaleDateString("en-GB", { month: "short", day: "numeric" }),
           commits: item.count,
         };
       });
@@ -74,7 +74,7 @@ export default function CommitsTimelineChart({
         >
           <option value="daily">Last 30 Days (Daily)</option>
           <option value="weekly">Last 3 Months (Weekly)</option>
-          <option value="yearly">Lifetime (Yearly)</option>
+          <option value="yearly">All time (Yearly)</option>
         </select>
       </div>
 
