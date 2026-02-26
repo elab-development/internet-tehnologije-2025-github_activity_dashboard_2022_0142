@@ -20,6 +20,7 @@ export default function SearchBox({ onSearch, initialValue, initialType }: Props
   return (
     <form onSubmit={handleSubmit} className="flex gap-3">
       <select
+        data-testid="search-type"
         value={type}
         onChange={(e) => setType(e.target.value)}
         className="px-3 py-2 border-2 border-gray-700 rounded-none bg-gray-100 hover:bg-white text-black focus:outline-none focus:bg-gray-100 transition-colors duration-300"
@@ -28,11 +29,13 @@ export default function SearchBox({ onSearch, initialValue, initialType }: Props
         <option value="user">User</option>
       </select>
       <input
+        data-testid="search-input"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={type === "user" ? "Enter username..." : "Search repositories..."}
 className="flex-1 px-4 py-2 border-2 border-gray-700 bg-gray-100 hover:bg-white focus:bg-white focus:outline-none text-black transition-colors duration-300 ease-in-out rounded-none"      />
-      <button 
+      <button
+        data-testid="search-submit" 
         type="submit"
         className="px-6 py-2 bg-gray-100 hover:bg-white hover:text-black transition-all duration-300 ease-in-out border-2 -l-0 border-gray-700 rounded-none text-black font-medium"
       >
