@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import type { JWT } from "next-auth/jwt";
 import type { User } from "next-auth";
 
@@ -39,8 +39,8 @@ describe("auth.config", () => {
         role: "ADMIN",
       };
 
-      (UserRepository.findByEmail as any).mockResolvedValue(mockUser);
-      (bcrypt.compare as any).mockResolvedValue(true);
+      (UserRepository.findByEmail as Mock).mockResolvedValue(mockUser);
+      (bcrypt.compare as Mock).mockResolvedValue(true);
 
       const result = await authorize({
         email: "test@test.com",
@@ -64,7 +64,7 @@ describe("auth.config", () => {
     });
 
     it("returns null when user does not exist", async () => {
-      (UserRepository.findByEmail as any).mockResolvedValue(null);
+      (UserRepository.findByEmail as Mock).mockResolvedValue(null);
 
       const result = await authorize({
         email: "no@test.com",
