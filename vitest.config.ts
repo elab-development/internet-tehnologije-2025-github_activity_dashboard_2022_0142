@@ -7,6 +7,12 @@
      test: {
        environment: 'jsdom',
        globals: true,
+       exclude: [
+          '**/node_modules/**',
+          '**/dist/**',
+          '**/e2e/**',
+          '**/.{idea,git,cache,output,temp}/**'
+        ],
        setupFiles: './vitest.setup.js'
      },
      resolve: {

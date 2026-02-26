@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "test": "vitest"
-  },
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "eslint",
+      "test": "vitest run",
+      "test:watch": "vitest",
+      "test:e2e": "playwright test --project=chromium",
+      "test:e2e:ui": "playwright test --ui",
+      "test:all": "npm run test && npm run test:e2e"
+    },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.2.0",
     "@prisma/adapter-planetscale": "^7.2.0",
