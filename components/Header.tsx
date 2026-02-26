@@ -45,6 +45,7 @@ export default function Header() {
             )}
             
             <button
+              data-testid="logout-btn"
               onClick={() => signOut({ callbackUrl: "/" })}
                 className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
               
@@ -55,6 +56,7 @@ export default function Header() {
         ) : (
           pathname !== "/login" && (
             <button
+              data-testid="login-btn"
               onClick={() => signIn(undefined, { callbackUrl: fullPath })}
                 className="h-12 px-8 flex items-center bg-gray-100 text-black text-xl font-medium hover:bg-white border-2 border-black transition-colors"
             >

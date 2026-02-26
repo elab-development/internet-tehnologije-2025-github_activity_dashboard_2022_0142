@@ -37,6 +37,7 @@ export default function LoginPage() {
         )}
 
         <input
+          data-testid="login-email"
           name="email"
           type="email"
           required
@@ -47,6 +48,7 @@ export default function LoginPage() {
         />
 
         <input
+          data-testid="login-password"
           name="password"
           type="password"
           required
@@ -57,6 +59,7 @@ export default function LoginPage() {
         />
 
         <button
+          data-testid="login-submit"
           type="submit"
           className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent
                      hover:bg-gray-900 transition-colors

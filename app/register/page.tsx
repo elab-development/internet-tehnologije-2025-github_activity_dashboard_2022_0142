@@ -48,6 +48,7 @@ export default function RegisterPage() {
         )}
 
         <input
+          data-testid="register-email"
           name="email"
           type="email"
           required
@@ -58,6 +59,7 @@ export default function RegisterPage() {
         />
 
         <input
+          data-testid="register-password"
           name="password"
           type="password"
           required
@@ -68,6 +70,7 @@ export default function RegisterPage() {
         />
 
         <button
+          data-testid="register-submit"
           type="submit"
           disabled={isSubmitting}
           className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent
