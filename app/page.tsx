@@ -1,15 +1,18 @@
-"use client";
+// app/page.tsx
 
-import { useSearchParams, useRouter } from "next/navigation";
-import SearchBox from "@/components/SearchBox";
-import RepoList from "@/components/RepoList";
-import Pagination from "@/components/Pagination";
-import { useRepos } from "@/hooks/useRepos";
+'use client';
 
-export default function HomePage() {
+import { useSearchParams, useRouter } from 'next/navigation';
+import SearchBox from '@/components/SearchBox';
+import RepoList from '@/components/RepoList';
+import Pagination from '@/components/Pagination';
+import { useRepos } from '@/hooks/useRepos';
+import { Suspense } from 'react';
+
+function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const query = searchParams.get("q") ?? "";
   const type = searchParams.get("type") ?? "repo";
   const page = Number(searchParams.get("page")) || 1;
@@ -40,21 +43,22 @@ export default function HomePage() {
   }
 
   return (
-    <div className={query 
-    ? "space-y-8" 
+    <div className={query
+    ? "space-y-8"
     : "flex flex-col items-center justify-center min-h-[60vh]"}>
-      
+
       <div className={query ? "w-full" : "w-full max-w-2xl"}>
-        <SearchBox 
-          initialValue={query} 
-          initialType={type} 
-          onSearch={handleSearch} 
+        <SearchBox
+          initialValue={query}
+          initialType={type}
+          onSearch={handleSearch}
         />
       </div>
-      
+
       {query && (
         <div className="w-full space-y-8">
-          <RepoList repos={repos} loading={loading} query={query} type={type}/>
+          <RepoList repos={repos} loading={loading} query={query}
+type={type}/>
 
           {totalPages > 0 && (
             <Pagination
@@ -67,5 +71,13 @@ export default function HomePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div>Loading main content...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
