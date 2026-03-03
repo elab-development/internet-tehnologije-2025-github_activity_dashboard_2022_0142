@@ -53,9 +53,7 @@ export default function RegisterPage() {
           type="email"
           required
           placeholder="Email"
-          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
-                     focus:outline-none focus:ring-2 focus:ring-gray-800
-                     focus:border-transparent"
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         />
 
         <input
@@ -64,18 +62,14 @@ export default function RegisterPage() {
           type="password"
           required
           placeholder="Password"
-          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
-                     focus:outline-none focus:ring-2 focus:ring-gray-800
-                     focus:border-transparent"
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         />
 
         <button
           data-testid="register-submit"
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent
-                     hover:bg-gray-900 transition-colors disabled:opacity-50
-                     focus:outline-none focus:ring-2 focus:ring-gray-800"
+          className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent hover:bg-gray-900 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
           {isSubmitting ? "Creating Account..." : "Register"}
         </button>

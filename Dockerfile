@@ -9,7 +9,17 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN env DATABASE_URL="postgresql://user:password@host:port/db" npx prisma generate
+ARG DATABASE_URL="mysql://root:randompassword@localhost:3306/mydb"
+ENV DATABASE_URL=$DATABASE_URL
+
+RUN npx prisma generate
+
+ARG UPSTASH_REDIS_REST_URL="http://temp-url-for-build"
+ARG UPSTASH_REDIS_REST_TOKEN="temp-token"
+
+
+ENV UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL
+ENV UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN
 
 RUN npm run build
 

@@ -42,9 +42,7 @@ function LoginForm() {
           type="email"
           required
           placeholder="Email"
-          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
-                    focus:outline-none focus:ring-2 focus:ring-gray-800
-                    focus:border-transparent"
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         />
 
         <input
@@ -53,18 +51,13 @@ function LoginForm() {
           type="password"
           required
           placeholder="Password"
-          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white
-                    focus:outline-none focus:ring-2 focus:ring-gray-800
-                    focus:border-transparent"
+          className="w-full px-3 py-2 border-2 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent"
         />
 
         <button
           data-testid="login-submit"
           type="submit"
-          className="w-full py-2 mt-2 bg-gray-800 text-white border-2
-border-transparent
-                    hover:bg-gray-900 transition-colors
-                    focus:outline-none focus:ring-2 focus:ring-gray-800"
+          className="w-full py-2 mt-2 bg-gray-800 text-white border-2 border-transparent hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
           Sign In
         </button>
@@ -73,8 +66,7 @@ border-transparent
       <div className="mt-6 text-center text-sm text-gray-600">
         <Link
           href="/register"
-          className="text-lg font-semibold text-gray-900 hover:underline
-transition-all"
+          className="text-lg font-semibold text-gray-900 hover:underline transition-all"
         >
           Create account
         </Link>

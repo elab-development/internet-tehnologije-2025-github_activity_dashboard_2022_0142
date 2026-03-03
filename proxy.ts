@@ -19,14 +19,14 @@ export default auth((req) => {
     if (isLoggedIn && role === "ADMIN") {
       return NextResponse.next();
     }
-    return NextResponse.redirect(new URL("/", req.nextUrl));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (isUserPage) {
     if (isLoggedIn) {
       return NextResponse.next();
     }
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
