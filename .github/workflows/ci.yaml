@@ -64,7 +64,7 @@ jobs:
       - name: Seed the database
         run: npx prisma db seed
         env:
-          DATABASE_URL: "mysql://root:password@127.0.0.1:3306/testdb"
+          DATABASE_URL: "mysql://root:password@127.0.0.1:3306/testdb?sslmode=disable"
           DATABASE_HOST: "127.0.0.1"
           DATABASE_USER: "root"
           DATABASE_PASSWORD: "password"
@@ -78,7 +78,8 @@ jobs:
           DATABASE_USER: "root"
           DATABASE_PASSWORD: "password"
           DATABASE_NAME: "testdb"
-          REDIS_URL: "redis://localhost:6379"
+          UPSTASH_REDIS_REST_URL: "http://127.0.0.1:6379"
+          UPSTASH_REDIS_REST_TOKEN: "example_token"
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           AUTH_URL: ${{ secrets.AUTH_URL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -91,10 +92,12 @@ jobs:
           DATABASE_USER: "root"
           DATABASE_PASSWORD: "password"
           DATABASE_NAME: "testdb"
-          REDIS_URL: "redis://localhost:6379"
+          UPSTASH_REDIS_REST_URL: "http://127.0.0.1:6379"
+          UPSTASH_REDIS_REST_TOKEN: "example_token"
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           AUTH_URL: ${{ secrets.AUTH_URL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          GITHUB_ACTIONS: "true"
 
       - name: Upload Playwright report
         if: always()

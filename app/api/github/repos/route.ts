@@ -23,9 +23,9 @@ export async function GET(request: Request) {
     let searchData;
 
     try {
-      const cached = await redis.get(cacheKey);
+      const cached = await redis.get<any>(cacheKey);
       if (cached) {
-        searchData = JSON.parse(cached);
+        searchData = cached;
       } else {
         const response = await octokit.rest.search.repos({
           q: finalQuery,
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
           items: response.data.items,
           totalCount: response.data.total_count,
         };
-        await redis.set(cacheKey, JSON.stringify(searchData), "EX", 30);
+        await redis.set(cacheKey, searchData, {ex:30});
       }
     } catch (err: any) {
       if (err.status === 422) {

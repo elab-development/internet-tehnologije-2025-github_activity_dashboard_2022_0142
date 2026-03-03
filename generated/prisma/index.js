@@ -19,7 +19,10 @@ const {
   skip,
   Decimal,
   Debug,
-  objectEnumValues,
+  DbNull,
+  JsonNull,
+  AnyNull,
+  NullTypes,
   makeStrictEnum,
   Extensions,
   warnOnce,
@@ -27,7 +30,7 @@ const {
   Public,
   getRuntime,
   createParam,
-} = require('./runtime/library.js')
+} = require('./runtime/client.js')
 
 
 const Prisma = {}
@@ -36,12 +39,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.2
- * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 Prisma.prismaVersion = {
-  client: "6.19.2",
-  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -69,15 +72,11 @@ Prisma.defineExtension = Extensions.defineExtension
 /**
  * Shorthand utilities for JSON filtering
  */
-Prisma.DbNull = objectEnumValues.instances.DbNull
-Prisma.JsonNull = objectEnumValues.instances.JsonNull
-Prisma.AnyNull = objectEnumValues.instances.AnyNull
+Prisma.DbNull = DbNull
+Prisma.JsonNull = JsonNull
+Prisma.AnyNull = AnyNull
 
-Prisma.NullTypes = {
-  DbNull: objectEnumValues.classes.DbNull,
-  JsonNull: objectEnumValues.classes.JsonNull,
-  AnyNull: objectEnumValues.classes.AnyNull
-}
+Prisma.NullTypes = NullTypes
 
 
 
@@ -136,91 +135,31 @@ exports.Prisma.ModelName = {
  * Create the Client
  */
 const config = {
-  "generator": {
-    "name": "client",
-    "provider": {
-      "fromEnvVar": null,
-      "value": "prisma-client-js"
-    },
-    "output": {
-      "value": "/home/milan/Documents/GitHub Activity Dashboard/github-activity-dashboard/generated/prisma",
-      "fromEnvVar": null
-    },
-    "config": {
-      "engineType": "library"
-    },
-    "binaryTargets": [
-      {
-        "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
-        "native": true
-      }
-    ],
-    "previewFeatures": [],
-    "sourceFilePath": "/home/milan/Documents/GitHub Activity Dashboard/github-activity-dashboard/prisma/schema.prisma",
-    "isCustomOutput": true
-  },
-  "relativeEnvPaths": {
-    "rootEnvPath": null
-  },
-  "relativePath": "../../prisma",
-  "clientVersion": "6.19.2",
-  "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
-  "datasourceNames": [
-    "db"
-  ],
+  "previewFeatures": [],
+  "clientVersion": "7.4.2",
+  "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "mysql",
-  "postinstall": false,
-  "inlineDatasources": {
-    "db": {
-      "url": {
-        "fromEnvVar": "DATABASE_URL",
-        "value": null
-      }
-    }
-  },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        String     @id @default(uuid())\n  email     String     @unique\n  password  String\n  role      Role       @default(USER)\n  bookmarks Bookmark[]\n}\n\nmodel Bookmark {\n  id       String @id @default(uuid())\n  userId   String\n  repoName String\n  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, repoName])\n}\n\nenum Role {\n  ADMIN\n  USER\n}\n",
-  "inlineSchemaHash": "abfba61e170943265f5ea8706d8332fbbf9bd09c783d96445f8cc903949a2154",
-  "copyEngine": true
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\nmodel User {\n  id        String     @id @default(uuid())\n  email     String     @unique\n  password  String\n  role      Role       @default(USER)\n  bookmarks Bookmark[]\n}\n\nmodel Bookmark {\n  id       String @id @default(uuid())\n  userId   String\n  repoName String\n  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, repoName])\n}\n\nenum Role {\n  ADMIN\n  USER\n}\n"
 }
 
-const fs = require('fs')
-
-config.dirname = __dirname
-if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
-  const alternativePaths = [
-    "generated/prisma",
-    "prisma",
-  ]
-  
-  const alternativePath = alternativePaths.find((altPath) => {
-    return fs.existsSync(path.join(process.cwd(), altPath, 'schema.prisma'))
-  }) ?? alternativePaths[0]
-
-  config.dirname = path.join(process.cwd(), alternativePath)
-  config.isBundled = true
-}
-
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"password\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"role\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Role\",\"nativeType\":null,\"default\":\"USER\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"bookmarks\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Bookmark\",\"nativeType\":null,\"relationName\":\"BookmarkToUser\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Bookmark\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"repoName\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"user\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"User\",\"nativeType\":null,\"relationName\":\"BookmarkToUser\",\"relationFromFields\":[\"userId\"],\"relationToFields\":[\"id\"],\"relationOnDelete\":\"Cascade\",\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[[\"userId\",\"repoName\"]],\"uniqueIndexes\":[{\"name\":null,\"fields\":[\"userId\",\"repoName\"]}],\"isGenerated\":false}},\"enums\":{\"Role\":{\"values\":[{\"name\":\"ADMIN\",\"dbName\":null},{\"name\":\"USER\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"bookmarks\",\"kind\":\"object\",\"type\":\"Bookmark\",\"relationName\":\"BookmarkToUser\"}],\"dbName\":null},\"Bookmark\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"repoName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BookmarkToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
-config.engineWasm = undefined
-config.compilerWasm = undefined
+config.parameterizationSchema = {
+  strings: JSON.parse("[\"where\",\"orderBy\",\"cursor\",\"user\",\"bookmarks\",\"_count\",\"User.findUnique\",\"User.findUniqueOrThrow\",\"User.findFirst\",\"User.findFirstOrThrow\",\"User.findMany\",\"data\",\"User.createOne\",\"User.createMany\",\"User.updateOne\",\"User.updateMany\",\"create\",\"update\",\"User.upsertOne\",\"User.deleteOne\",\"User.deleteMany\",\"having\",\"_min\",\"_max\",\"User.groupBy\",\"User.aggregate\",\"Bookmark.findUnique\",\"Bookmark.findUniqueOrThrow\",\"Bookmark.findFirst\",\"Bookmark.findFirstOrThrow\",\"Bookmark.findMany\",\"Bookmark.createOne\",\"Bookmark.createMany\",\"Bookmark.updateOne\",\"Bookmark.updateMany\",\"Bookmark.upsertOne\",\"Bookmark.deleteOne\",\"Bookmark.deleteMany\",\"Bookmark.groupBy\",\"Bookmark.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"userId\",\"repoName\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"contains\",\"startsWith\",\"endsWith\",\"search\",\"not\",\"email\",\"password\",\"Role\",\"role\",\"every\",\"some\",\"none\",\"userId_repoName\",\"is\",\"isNot\",\"connectOrCreate\",\"upsert\",\"createMany\",\"set\",\"disconnect\",\"delete\",\"connect\",\"updateMany\",\"deleteMany\",\"_relevance\"]"),
+  graph: "Yg4cCAQAAD0AICgAADoAMCkAAAkAECoAADoAMCsBAAAAAToBAAAAATsBADsAIT0AADw9IgEAAAABACAHAwAAQAAgKAAAPwAwKQAAAwAQKgAAPwAwKwEAOwAhLAEAOwAhLQEAOwAhAgMAAFsAIE0AAFwAIAgDAABAACAoAAA_ADApAAADABAqAAA_ADArAQAAAAEsAQA7ACEtAQA7ACFBAAA-ACADAAAAAwAgAQAABAAwAgAABQAgAQAAAAMAIAEAAAABACAIBAAAPQAgKAAAOgAwKQAACQAQKgAAOgAwKwEAOwAhOgEAOwAhOwEAOwAhPQAAPD0iAgQAAFkAIE0AAFoAIAMAAAAJACABAAAKADACAAABACADAAAACQAgAQAACgAwAgAAAQAgAwAAAAkAIAEAAAoAMAIAAAEAIAUEAABYACArAQAAAAE6AQAAAAE7AQAAAAE9AAAAPQIBCwAADgAgBCsBAAAAAToBAAAAATsBAAAAAT0AAAA9AgELAAAQADAFBAAASwAgKwEARAAhOgEARAAhOwEARAAhPQAASj0iAgAAAAEAIAsAABIAIAQrAQBEACE6AQBEACE7AQBEACE9AABKPSICAAAACQAgCwAAFAAgAwAAAAEAIBAAAA4AIBEAABIAIAEAAAABACABAAAACQAgAwUAAEcAIBYAAEkAIBcAAEgAIAcoAAA2ADApAAAaABAqAAA2ADArAQAyACE6AQAyACE7AQAyACE9AAA3PSIDAAAACQAgAQAAGQAwFQAAGgAgAwAAAAkAIAEAAAoAMAIAAAEAIAEAAAAFACABAAAABQAgAwAAAAMAIAEAAAQAMAIAAAUAIAMAAAADACABAAAEADACAAAFACADAAAAAwAgAQAABAAwAgAABQAgBAMAAEYAICsBAAAAASwBAAAAAS0BAAAAAQELAAAiACADKwEAAAABLAEAAAABLQEAAAABAQsAACQAMAQDAABFACArAQBEACEsAQBEACEtAQBEACECAAAABQAgCwAAJgAgAysBAEQAISwBAEQAIS0BAEQAIQIAAAADACALAAAoACADAAAABQAgEAAAIgAgEQAAJgAgAQAAAAUAIAEAAAADACADBQAAQQAgFgAAQwAgFwAAQgAgBigAADEAMCkAAC4AECoAADEAMCsBADIAISwBADIAIS0BADIAIQMAAAADACABAAAtADAVAAAuACADAAAAAwAgAQAABAAwAgAABQAgBigAADEAMCkAAC4AECoAADEAMCsBADIAISwBADIAIS0BADIAIQ8FAAA0ACAWAAA1ACAXAAA1ACAuAQAAAAEvAQAAAAQwAQAAAAQxAQAAAAEyAQAAAAEzAQAAAAE0AQAAAAE1AQAAAAE2AQAAAAE3AQAAAAE4AQAAAAE5AQAzACEPBQAANAAgFgAANQAgFwAANQAgLgEAAAABLwEAAAAEMAEAAAAEMQEAAAABMgEAAAABMwEAAAABNAEAAAABNQEAAAABNgEAAAABNwEAAAABOAEAAAABOQEAMwAhCC4CAAAAAS8CAAAABDACAAAABDECAAAAATICAAAAATMCAAAAATQCAAAAATkCADQAIQwuAQAAAAEvAQAAAAQwAQAAAAQxAQAAAAEyAQAAAAEzAQAAAAE0AQAAAAE1AQAAAAE2AQAAAAE3AQAAAAE4AQAAAAE5AQA1ACEHKAAANgAwKQAAGgAQKgAANgAwKwEAMgAhOgEAMgAhOwEAMgAhPQAANz0iBwUAADQAIBYAADkAIBcAADkAIC4AAAA9Ai8AAAA9CDAAAAA9CDkAADg9IgcFAAA0ACAWAAA5ACAXAAA5ACAuAAAAPQIvAAAAPQgwAAAAPQg5AAA4PSIELgAAAD0CLwAAAD0IMAAAAD0IOQAAOT0iCAQAAD0AICgAADoAMCkAAAkAECoAADoAMCsBADsAIToBADsAITsBADsAIT0AADw9IgwuAQAAAAEvAQAAAAQwAQAAAAQxAQAAAAEyAQAAAAEzAQAAAAE0AQAAAAE1AQAAAAE2AQAAAAE3AQAAAAE4AQAAAAE5AQA1ACEELgAAAD0CLwAAAD0IMAAAAD0IOQAAOT0iAz4AAAMAID8AAAMAIEAAAAMAIAIsAQAAAAEtAQAAAAEHAwAAQAAgKAAAPwAwKQAAAwAQKgAAPwAwKwEAOwAhLAEAOwAhLQEAOwAhCgQAAD0AICgAADoAMCkAAAkAECoAADoAMCsBADsAIToBADsAITsBADsAIT0AADw9IkIAAAkAIEMAAAkAIAAAAAFHAQAAAAEFEAAAXgAgEQAAYQAgRAAAXwAgRQAAYAAgSgAAAQAgAxAAAF4AIEQAAF8AIEoAAAEAIAAAAAFHAAAAPQILEAAATAAwEQAAUQAwRAAATQAwRQAATgAwRgAATwAgRwAAUAAwSAAAUAAwSQAAUAAwSgAAUAAwSwAAUgAwTAAAUwAwAisBAAAAAS0BAAAAAQIAAAAFACAQAABXACADAAAABQAgEAAAVwAgEQAAVgAgAQsAAF0AMAgDAABAACAoAAA_ADApAAADABAqAAA_ADArAQAAAAEsAQA7ACEtAQA7ACFBAAA-ACACAAAABQAgCwAAVgAgAgAAAFQAIAsAAFUAIAYoAABTADApAABUABAqAABTADArAQA7ACEsAQA7ACEtAQA7ACEGKAAAUwAwKQAAVAAQKgAAUwAwKwEAOwAhLAEAOwAhLQEAOwAhAisBAEQAIS0BAEQAIQIrAQBEACEtAQBEACECKwEAAAABLQEAAAABBBAAAEwAMEQAAE0AMEYAAE8AIEoAAFAAMAABOAEAAAABAgQAAFkAIE0AAFoAIAE4AQAAAAECKwEAAAABLQEAAAABBCsBAAAAAToBAAAAATsBAAAAAT0AAAA9AgIAAAABACAQAABeACADAAAACQAgEAAAXgAgEQAAYgAgBgAAAAkAIAsAAGIAICsBAEQAIToBAEQAITsBAEQAIT0AAEo9IgQrAQBEACE6AQBEACE7AQBEACE9AABKPSICBAYCBQADAQMAAQEEBwAAAwUABhYABxcACAAAAAMFAAYWAAcXAAgDBQALFgAMFwANAAAAAwUACxYADBcADQYCAQcIAQgLAQkMAQoNAQwPAQ0RBA4TAQ8VBBIWARMXARQYBBgbBRkcCRodAhseAhwfAh0gAh4hAh8jAiAlBCEnAiIpBCMqAiQrAiUsBCYvCicwDg"
+}
+config.compilerWasm = {
+      getRuntime: async () => require('./query_compiler_fast_bg.js'),
+      getQueryCompilerWasmModule: async () => {
+        const { Buffer } = require('node:buffer')
+        const { wasm } = require('./query_compiler_fast_bg.wasm-base64.js')
+        const queryCompilerWasmFileBytes = Buffer.from(wasm, 'base64')
 
-
-const { warnEnvConflicts } = require('./runtime/library.js')
-
-warnEnvConflicts({
-    rootEnvPath: config.relativeEnvPaths.rootEnvPath && path.resolve(config.dirname, config.relativeEnvPaths.rootEnvPath),
-    schemaEnvPath: config.relativeEnvPaths.schemaEnvPath && path.resolve(config.dirname, config.relativeEnvPaths.schemaEnvPath)
-})
+        return new WebAssembly.Module(queryCompilerWasmFileBytes)
+      },
+      importName: './query_compiler_fast_bg.js',
+    }
 
 const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
-
-// file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
-// file annotations for bundling tools to include these files
-path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "generated/prisma/schema.prisma")

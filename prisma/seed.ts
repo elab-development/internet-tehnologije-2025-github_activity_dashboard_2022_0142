@@ -1,47 +1,52 @@
-import { PrismaClient } from '../generated/prisma/client';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import "dotenv/config";
 import bcrypt from 'bcryptjs';
-
-const host = process.env.DATABASE_HOST;
-const user = process.env.DATABASE_USER;
-const password = process.env.DATABASE_PASSWORD;
-const database = process.env.DATABASE_NAME;
-
-if (!host || !user || !password || !database) {
-    throw new Error('Database connection environment variables for seeding are not fully set!');
-}
-
-const adapter = new PrismaMariaDb({
-    host,
-    user,
-    password,
-    database,
-});
-
-const prisma = new PrismaClient({ adapter });
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaClient } from "../generated/prisma/client"; 
 
 async function main() {
-    console.log('Start seeding with adapter...');
+    console.log('Start seeding...');
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('password123', salt);
+    const dbUrl = new URL(process.env.DATABASE_URL as string);
 
-    await prisma.user.create({
-    data: {
-        email: 'test@example.com',
-        password: hashedPassword,
-        role: 'USER',
-    },
+    const adapter = new PrismaMariaDb({
+        host: dbUrl.hostname,
+        port: parseInt(dbUrl.port) || 3306,
+        user: dbUrl.username,
+        password: decodeURIComponent(dbUrl.password),
+        database: dbUrl.pathname.replace("/", ""),
+        connectionLimit: 10, 
+        ssl: {
+            rejectUnauthorized: false,
+        },
     });
 
-    console.log('Seeding finished successfully.');
+    const prisma = new PrismaClient({ adapter });
+
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('password123', salt);
+
+        await prisma.user.upsert({
+            where: { email: 'test@example.com' },
+            update: {},
+            create: {
+                email: 'test@example.com',
+                password: hashedPassword,
+                role: 'USER',
+            },
+        });
+
+        console.log('Seeding finished successfully.');
+    } catch (error) {
+        console.error('Error during seeding:', error);
+        throw error;
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
 main()
     .catch((e) => {
-    console.error(e);
-    process.exit(1);
-    })
-    .finally(async () => {
-    await prisma.$disconnect();
+        console.error(e);
+        process.exit(1);
     });

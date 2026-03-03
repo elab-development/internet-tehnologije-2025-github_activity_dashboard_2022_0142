@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 
   const key = `contributors:${owner}:${repo}`;
   const cached = await redis.get(key);
-  if (cached) return NextResponse.json(JSON.parse(cached));
+  if (cached) return NextResponse.json(cached);
 
   const res = await octokit.rest.repos.getContributorsStats({ owner, repo });
 
@@ -24,6 +24,6 @@ export async function GET(req: Request) {
     }))
     .sort((a, b) => b.commits - a.commits);
 
-  await redis.set(key, JSON.stringify(data), "EX", 3600);
+  await redis.set(key, data, {ex: 3600});
   return NextResponse.json(data);
 }

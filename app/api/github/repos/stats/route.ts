@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
     const cacheKey = `gh:stats:${owner}:${repo}`;
     const cached = await redis.get(cacheKey);
-    if (cached) return NextResponse.json(JSON.parse(cached));
+    if (cached) return NextResponse.json(cached);
 
     const today = new Date();
     const threeDaysAgo = new Date();
@@ -86,7 +86,7 @@ export async function GET(request: Request) {
 
     const result = { daily, weekly, yearly };
 
-    await redis.set(cacheKey, JSON.stringify(result), "EX", 300);
+    await redis.set(cacheKey, result, {ex: 300});
     return NextResponse.json(result);
 
   } catch (error: any) {

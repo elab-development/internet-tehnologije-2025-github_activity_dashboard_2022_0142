@@ -22,11 +22,11 @@ vi.mock("@/lib/redis", () => ({
 
 describe("commits API route",  () => {
     const mockCommits = [{ sha: "123", message: "Cached commit" }];
-    beforeEach(()=>vi.clearAllMocks);
+    beforeEach(()=>vi.clearAllMocks());
     
     describe("caching logic", () => {
         it("returns cached data on a cache hit", async () => {
-            vi.mocked(redis.get as Mock).mockResolvedValue(JSON.stringify(mockCommits));
+            vi.mocked(redis.get as Mock).mockResolvedValue(mockCommits);
             
             const req = new Request("http://localhost/api/commits?owner=facebook&repo=react");
             const response = await GET(req);

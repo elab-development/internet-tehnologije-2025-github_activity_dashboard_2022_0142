@@ -13,7 +13,7 @@ test.describe('Search Functionality', () => {
 
     await searchInput.fill('react');
     await page.getByTestId('search-submit').click();
-    await expect(page.getByRole('link', { name: 'facebook/react' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'facebook/react' })).toBeVisible({timeout: 15000});
     });
 
     test('should change placeholder when switching to user search', async ({ page }) => {

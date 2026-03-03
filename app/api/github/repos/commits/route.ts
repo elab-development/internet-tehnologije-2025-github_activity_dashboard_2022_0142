@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     const cacheKey = `gh:commits:${owner}:${repo}:${author ?? "all"}:p:${page}`;
     
     const cached = await redis.get(cacheKey);
-    if (cached) return NextResponse.json(JSON.parse(cached));
+    if (cached) return NextResponse.json(cached);
 
     const response = await octokit.rest.repos.listCommits({
       owner,
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       url: c.html_url,
     }));
 
-    await redis.set(cacheKey, JSON.stringify(commitData), "EX", 300);
+    await redis.set(cacheKey, commitData, {ex:300});
 
     return NextResponse.json(commitData);
 
