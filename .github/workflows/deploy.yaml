@@ -22,17 +22,12 @@ jobs:
         run: az account set --subscription 4d54cacd-5b79-43cf-8dd0-95ee1c075a0d
 
       - name: Log in to ACR
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+        run: az acr login --name itehproject
 
       - name: Build and push image
         run: |
-          # Ensure image name is ALL LOWERCASE (e.g., nextjs-app)
-          IMAGE_TAG="${{ secrets.REGISTRY_LOGIN_SERVER }}/nextjs-app:${{ github.sha }}"
-          docker build . -t $IMAGE_TAG
+          IMAGE_TAG=${{ secrets.REGISTRY_LOGIN_SERVER }}/nextjs-app:${{ github.sha }}
+          docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
       - name: Deploy to Azure Container App
