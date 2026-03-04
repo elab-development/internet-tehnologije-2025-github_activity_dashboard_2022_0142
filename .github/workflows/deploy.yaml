@@ -18,6 +18,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Set Azure Subscription
+        run: az account set --subscription 4d54cacd-5b79-43cf-8dd0-95ee1c075a0d
+
       - name: Build and push image to ACR
         run: |
           az acr login --name ${{ secrets.REGISTRY_USERNAME }}
