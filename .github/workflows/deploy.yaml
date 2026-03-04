@@ -21,9 +21,15 @@ jobs:
       - name: Set Azure Subscription
         run: az account set --subscription 4d54cacd-5b79-43cf-8dd0-95ee1c075a0d
 
-      - name: Build and push image to ACR
+      - name: Log in to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push image
         run: |
-          az acr login --name ${{ secrets.REGISTRY_USERNAME }}
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/nextjs-app:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/nextjs-app:${{ github.sha }}
 
