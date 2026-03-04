@@ -27,6 +27,17 @@ body {
   }
 }
 
+@media (max-width: 767px) {
+  .retro-scrollbar .simplebar-track {
+    display: none !important;
+  }
+  
+  .retro-scrollbar .simplebar-content-wrapper {
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .retro-scrollbar .simplebar-track.simplebar-vertical {
   width: 20px;
   background-color: #dddddd; 
@@ -42,7 +53,6 @@ body {
   top: 2px;
   bottom: 2px;
   opacity: 1 !important;
-  
   box-shadow: 0 0 0 1px #000000; 
 }
 
