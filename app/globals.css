@@ -61,3 +61,8 @@ body {
   background-color: #ffffff !important;
   opacity: 1 !important;
 }
+
+.swagger-page .swagger-ui,
+.swagger-page .swagger-ui * {
+  font-family: "VT323", monospace !important;
+}

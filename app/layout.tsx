@@ -4,7 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { VT323 } from "next/font/google";
 import RetroScrollProvider from "@/components/ScrollbarProvider";
 
-const vt323 = VT323({
+export const vt323 = VT323({
   weight: "400",
   subsets: ["latin"],
   display: "swap",

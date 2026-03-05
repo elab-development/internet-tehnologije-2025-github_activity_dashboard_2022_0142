@@ -1,3 +1,100 @@
+/**
+ * @swagger
+ * /api/github/repos/stats:
+ *   get:
+ *     summary: Get repository commit statistics
+ *     tags:
+ *       - GitHub
+ *     description: Returns daily, weekly, and yearly commit statistics for a GitHub repository.
+ *     parameters:
+ *       - in: query
+ *         name: owner
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository owner (GitHub username or organization)
+ *       - in: query
+ *         name: repo
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository name
+ *     responses:
+ *       200:
+ *         description: Repository statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 daily:
+ *                   type: array
+ *                   description: Commit counts for the last 30 days
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "Mar 5"
+ *                       commits:
+ *                         type: integer
+ *                         example: 12
+ *                     required:
+ *                       - label
+ *                       - commits
+ *                 weekly:
+ *                   type: array
+ *                   description: Commit counts for the last 12 weeks
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "Mar 5"
+ *                       commits:
+ *                         type: integer
+ *                         example: 12
+ *                     required:
+ *                       - label
+ *                       - commits
+ *                 yearly:
+ *                   type: array
+ *                   description: Commit counts grouped by year
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       label:
+ *                         type: string
+ *                         example: "2024"
+ *                       commits:
+ *                         type: integer
+ *                         example: 340
+ *                     required:
+ *                       - label
+ *                       - commits
+ *       202:
+ *         description: GitHub is still processing commit statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: processing
+ *       400:
+ *         description: Missing owner or repo parameter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal Server Error
+ */
+
 import { NextResponse } from "next/server";
 import { octokit } from "@/lib/github";
 import { redis } from "@/lib/redis";

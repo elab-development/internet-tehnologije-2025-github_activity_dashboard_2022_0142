@@ -5,6 +5,59 @@ import Link from 'next/link';
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: strongPassword123
+ *     responses:
+ *       200:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully
+ *       400:
+ *         description: Missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Something went wrong
+ *       500:
+ *         description: Internal server error
+ */
 function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();

@@ -1,3 +1,70 @@
+/**
+ * @swagger
+ * /api/github/repos:
+ *   get:
+ *     summary: Search GitHub repositories or users
+ *     tags:
+ *       - GitHub    
+ *     description: Returns a list of GitHub repositories with bookmark status if the user is authenticated.
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search query (e.g. "nextjs")
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [repo, user]
+ *           default: repo
+ *         description: Whether to search repositories or a specific user
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Pagination page number
+ *     responses:
+ *       200:
+ *         description: Successful search result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 items:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       full_name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                         nullable: true
+ *                       html_url:
+ *                         type: string
+ *                       stargazers_count:
+ *                         type: integer
+ *                       isBookmarked:
+ *                         type: boolean
+ *                     required:
+ *                       - id
+ *                       - name
+ *                       - full_name
+ *                       - html_url
+ *                       - stargazers_count
+ *                 totalCount:
+ *                   type: integer
+ *       500:
+ *         description: Internal Server Error
+ */
 import { NextResponse } from "next/server";
 import { octokit } from "@/lib/github";
 import { auth } from "@/lib/auth";

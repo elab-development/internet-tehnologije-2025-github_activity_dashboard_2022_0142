@@ -1,3 +1,75 @@
+/**
+ * @swagger
+ * /api/github/repos/commits:
+ *   get:
+ *     summary: Get commits for a repository
+ *     tags:
+ *       - GitHub
+ *     parameters:
+ *       - in: query
+ *         name: owner
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository owner
+ *       - in: query
+ *         name: repo
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository name
+ *       - in: query
+ *         name: author
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Filter commits by author
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *     responses:
+ *       200:
+ *         description: List of commits
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   sha:
+ *                     type: string
+ *                     description: Commit SHA hash
+ *                   message:
+ *                     type: string
+ *                     description: Commit message
+ *                   author:
+ *                     type: string
+ *                     description: Commit author name
+ *                   login:
+ *                     type: string
+ *                     description: GitHub login of author
+ *                   avatar:
+ *                     type: string
+ *                     description: GitHub avatar URL
+ *                   date:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Commit date
+ *                   url:
+ *                     type: string
+ *                     description: Commit URL
+ *       400:
+ *         description: Missing or invalid parameters
+ *       404:
+ *         description: Repository not found
+ *       500:
+ *         description: Internal server error
+ */
 import { NextResponse } from "next/server";
 import { octokit } from "@/lib/github";
 import { redis } from "@/lib/redis";

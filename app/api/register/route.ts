@@ -1,3 +1,41 @@
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Auth
+ *     description: Creates a new user account with email and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       201:
+ *         description: User successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *       400:
+ *         description: Missing email/password or user already exists
+ *       500:
+ *         description: Internal server error
+ */
+
 import { NextResponse } from "next/server";
 import { UserRepository } from "@/lib/repositories/user.repository";
 import bcrypt from "bcryptjs";

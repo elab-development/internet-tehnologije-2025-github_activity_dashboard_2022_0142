@@ -1,3 +1,107 @@
+/**
+ * @swagger
+ * /api/bookmarks:
+ *   get:
+ *     summary: Get user bookmarks
+ *     tags:
+ *       - Bookmarks
+ *     description: Returns paginated GitHub repositories bookmarked by the authenticated user.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *     responses:
+ *       200:
+ *         description: List of bookmarked repositories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 items:
+ *                   type: array
+ *                   description: List of GitHub repositories
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       full_name:
+ *                         type: string
+ *                       html_url:
+ *                         type: string
+ *                       stargazers_count:
+ *                         type: integer
+ *                       isBookmarked:
+ *                         type: boolean
+ *                 totalCount:
+ *                   type: integer
+ *                   description: Total number of bookmarks
+ *       401:
+ *         description: Unauthorized
+ *
+ *   post:
+ *     summary: Add a bookmark
+ *     tags:
+ *       - Bookmarks
+ *     description: Adds a repository to the authenticated user's bookmarks.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               repoName:
+ *                 type: string
+ *                 example: "vercel/next.js"
+ *             required:
+ *               - repoName
+ *     responses:
+ *       201:
+ *         description: Bookmark added successfully
+ *       400:
+ *         description: Missing repoName
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ *
+ *   delete:
+ *     summary: Remove a bookmark
+ *     tags:
+ *       - Bookmarks
+ *     description: Removes a repository from the authenticated user's bookmarks.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               repoName:
+ *                 type: string
+ *                 example: "vercel/next.js"
+ *             required:
+ *               - repoName
+ *     responses:
+ *       200:
+ *         description: Bookmark removed
+ *       400:
+ *         description: Missing repoName
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Bookmark not found
+ *       500:
+ *         description: Internal server error
+ */
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth"; 
 import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";

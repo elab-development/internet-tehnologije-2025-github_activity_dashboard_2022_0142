@@ -1,3 +1,45 @@
+/**
+ * @swagger
+ * /api/github/repos/contributors:
+ *   get:
+ *     summary: Get repository contributors stats
+ *     tags:
+ *       - GitHub
+ *     description: Returns a list of contributors for the specified repository.
+ *     parameters:
+ *       - in: query
+ *         name: owner
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository owner username
+ *       - in: query
+ *         name: repo
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Repository name
+ *     responses:
+ *       200:
+ *         description: List of contributors with commit counts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   author:
+ *                     type: string
+ *                   commits:
+ *                     type: integer
+ *       202:
+ *         description: GitHub stats computation pending
+ *       400:
+ *         description: Missing owner or repo query parameters
+ *       500:
+ *         description: Internal Server Error
+ */
 import { NextResponse } from "next/server";
 import { octokit } from "@/lib/github";
 import { redis } from "@/lib/redis";

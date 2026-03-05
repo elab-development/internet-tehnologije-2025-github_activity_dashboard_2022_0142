@@ -1,3 +1,34 @@
+/**
+ * @swagger
+ * /api/bookmarks/check:
+ *   get:
+ *     summary: Check if a repo is bookmarked
+ *     tags:
+ *       - Bookmarks
+ *     description: Returns whether the current user has bookmarked a specific repository.
+ *     parameters:
+ *       - in: query
+ *         name: repoName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Full name of the repository to check
+ *     responses:
+ *       200:
+ *         description: Bookmark status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isBookmarked:
+ *                   type: boolean
+ *       400:
+ *         description: Missing repoName parameter
+ *       401:
+ *         description: Unauthorized
+ */
+
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { bookmarkRepository } from "@/lib/repositories/bookmark.repository";
