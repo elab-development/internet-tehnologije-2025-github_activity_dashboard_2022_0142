@@ -3,12 +3,17 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { VT323 } from "next/font/google";
 import RetroScrollProvider from "@/components/ScrollbarProvider";
+import type { Metadata } from "next";
 
 export const vt323 = VT323({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
+
+export const metadata: Metadata = {
+  title: "GitHub Activity Dashboard",
+};
 
 export default function RootLayout({
   children,
