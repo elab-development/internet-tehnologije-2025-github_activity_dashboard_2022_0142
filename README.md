@@ -2,6 +2,8 @@
 
 A dashboard application for tracking and analyzing GitHub repository activity I made for my Internet Tenchnologies university course. It allows users to search for repositories, view detailed commit history and contributor stats, and manage personal bookmarks.
 
+![itehshowcase](https://github.com/user-attachments/assets/f1b5aea4-6335-4176-bad9-1e1a1033bab1)
+
 ## Features
 
 -   **Repository Search:** Search for any public GitHub repository.
